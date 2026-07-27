@@ -1,0 +1,63 @@
+{
+  "slug": "portfolio-andgel-brissaud",
+
+  "title": "Portfolio Andgel Brissaud",
+
+  "category": "Développement Full Stack",
+
+  "description": "Portfolio personnel présentant mes projets web, mes réalisations techniques et mon univers photographique.",
+
+
+  "image": "/images/projects/portfolio-cover.png",
+
+
+  "gallery": [
+    "/images/projects/portfolio-gallery-1.png",
+    "/images/projects/portfolio-gallery-2.png"
+  ],
+
+
+  "year": "2026",
+
+
+  "technologies": [
+    "React",
+    "TypeScript",
+    "Tailwind CSS",
+    "Framer Motion",
+    "Node.js"
+  ],
+
+
+  "design": {
+
+    "style": "Une direction artistique minimaliste mêlant élégance, photographie et technologie.",
+
+
+    "experience": "Une expérience fluide permettant de découvrir les projets, compétences et réalisations.",
+
+
+    "typography": [
+      "Playfair Display",
+      "Inter"
+    ],
+
+
+    "colors": [
+      {
+        "name": "Noir profond",
+        "value": "#050505"
+      },
+      {
+        "name": "Or ancien",
+        "value": "#B08D57"
+      },
+      {
+        "name": "Ivoire",
+        "value": "#F4EFE6"
+      }
+    ]
+
+  }
+
+}

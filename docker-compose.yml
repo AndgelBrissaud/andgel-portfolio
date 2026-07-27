@@ -1,0 +1,118 @@
+services:
+
+
+  site:
+
+
+    image: ghcr.io/andgelbrissaud/andgel-portfolio:latest
+
+
+    container_name: andgel-portfolio
+
+
+    restart: unless-stopped
+
+
+
+    depends_on:
+
+      - backend
+
+
+
+
+
+    labels:
+
+
+      traefik.enable: "true"
+
+
+
+      traefik.http.routers.andgelportfolio.rule: "Host(`andgel-brissaud.fr`) || Host(`www.andgel-brissaud.fr`)"
+
+
+
+      traefik.http.routers.andgelportfolio.entrypoints: "web"
+
+
+
+      traefik.http.services.andgelportfolio.loadbalancer.server.port: "80"
+
+
+
+
+
+    volumes:
+
+
+      - ./uploads:/app/uploads:ro
+
+
+
+
+
+    networks:
+
+
+      - web
+
+
+
+
+
+
+
+  backend:
+
+
+    image: ghcr.io/andgelbrissaud/andgel-portfolio-backend:latest
+
+
+    container_name: andgel-portfolio-backend
+
+
+    restart: unless-stopped
+
+
+
+
+
+    env_file:
+
+
+      - .env
+
+
+
+
+
+    volumes:
+
+
+      - ./data:/app/data
+
+      - ./uploads:/app/uploads
+
+
+
+
+
+    networks:
+
+
+      - web
+
+
+
+
+
+
+
+networks:
+
+
+  web:
+
+
+    external: true

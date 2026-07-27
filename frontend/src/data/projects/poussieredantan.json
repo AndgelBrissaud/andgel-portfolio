@@ -1,0 +1,80 @@
+{
+  "slug": "poussiere-dantan",
+
+  "title": "Poussière d'Antan",
+
+  "category": "Projet personnel",
+
+  "description": "Création d'un site vitrine premium pour un atelier de restauration de mobilier ancien, développé avec React et TypeScript.",
+
+  "image": "/images/projects/poussiere-cover.png",
+
+  "gallery": [
+    "/images/projects/poussiere-gallery-1.png",
+    "/images/projects/poussiere-gallery-2.png"
+  ],
+
+  "year": "2026",
+
+
+  "design": {
+
+    "style": "Une identité visuelle inspirée des ateliers d'artisanat ancien. Un univers sombre et élégant utilisant des textures nobles, des contrastes doux et une approche minimaliste.",
+
+    "experience": "L'objectif est de transmettre le savoir-faire artisanal tout en proposant une expérience numérique moderne, fluide et immersive.",
+
+
+    "typography": [
+      "Playfair Display",
+      "Inter"
+    ],
+
+
+    "colors": [
+      {
+        "name": "Noir profond",
+        "value": "#050505"
+      },
+      {
+        "name": "Or ancien",
+        "value": "#B08D57"
+      },
+      {
+        "name": "Ivoire",
+        "value": "#F4EFE6"
+      }
+    ]
+
+  },
+
+
+
+  "technical": [
+
+    "React",
+
+    "TypeScript",
+
+    "Tailwind CSS",
+
+    "Node.js",
+
+    "Express",
+
+    "MariaDB",
+
+    "API REST",
+
+    "Formulaire sécurisé",
+
+    "Captcha Google",
+
+    "Envoi d'emails SMTP",
+
+    "Validation des données",
+
+    "Déploiement VPS Docker"
+
+  ]
+
+}
