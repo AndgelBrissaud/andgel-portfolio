@@ -12,6 +12,8 @@ type ButtonProps = {
     variant?: "primary" | "secondary";
 
     className?: string;
+    type?: "button" | "submit" | "reset";
+    disabled?: boolean;
 
 };
 
@@ -27,7 +29,9 @@ export default function Button({
 
     href,
 
-    className=""
+    className="",
+    type = "button",
+    disabled = false
 
 }:ButtonProps){
 
@@ -229,7 +233,7 @@ export default function Button({
 
     return (
 
-        <button className={style}>
+        <button className={style} type={type} disabled={disabled}>
 
             {content}
 

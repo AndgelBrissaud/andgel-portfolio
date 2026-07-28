@@ -1,6 +1,7 @@
 import {
     useState
 } from "react";
+import type { ReactNode } from "react";
 
 
 
@@ -29,6 +30,7 @@ interface PremiumInputProps {
 
 
     required?:boolean;
+    end?: ReactNode;
 
 
 }
@@ -65,7 +67,8 @@ export default function PremiumInput({
     rows=5,
 
 
-    required=false
+    required=false,
+    end
 
 
 }:PremiumInputProps){
@@ -141,118 +144,139 @@ export default function PremiumInput({
 
                 ?
 
+
                 (
 
-                    <textarea
+                    <div className="relative">
+
+                        <textarea
+
+                            value={value}
+
+                            onChange={(event)=>
+
+                                onChange(
+
+                                    event.target.value
+
+                                )
+
+                            }
 
 
-                        value={value}
+                            onFocus={()=>
+
+                                setFocused(true)
+
+                            }
 
 
-                        onChange={(event)=>
+                            onBlur={()=>
 
-                            onChange(
+                                setFocused(false)
 
-                                event.target.value
-
-                            )
-
-                        }
+                            }
 
 
-                        onFocus={()=>
-
-                            setFocused(true)
-
-                        }
+                            placeholder={placeholder}
 
 
-                        onBlur={()=>
-
-                            setFocused(false)
-
-                        }
+                            rows={rows}
 
 
-                        placeholder={placeholder}
+                            required={required}
 
 
-                        rows={rows}
+                            className={`
+                                w-full
+                                resize-none
+                                bg-transparent
+                                border-none
+                                outline-none
+                                text-text
+                                placeholder:text-text-muted
+                                py-3
+                                ${end ? 'pr-12' : ''}
+                            `}
 
+                        />
 
-                        required={required}
+                        {end && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2 z-10">
+                                {end}
+                            </div>
+                        )}
 
-
-                        className="
-                            w-full
-                            resize-none
-                            bg-transparent
-                            border-none
-                            outline-none
-                            text-text
-                            placeholder:text-text-muted
-                            py-3
-                        "
-
-                    />
+                    </div>
 
                 )
 
                 :
 
+
                 (
 
-                    <input
+                    <div className="relative flex items-center">
+
+                        <input
+
+                            type={type}
 
 
-                        type={type}
+                            value={value}
 
 
-                        value={value}
+                            onChange={(event)=>
+
+                                onChange(
+
+                                    event.target.value
+
+                                )
+
+                            }
 
 
-                        onChange={(event)=>
+                            onFocus={()=>
 
-                            onChange(
+                                setFocused(true)
 
-                                event.target.value
-
-                            )
-
-                        }
+                            }
 
 
-                        onFocus={()=>
+                            onBlur={()=>
 
-                            setFocused(true)
+                                setFocused(false)
 
-                        }
-
-
-                        onBlur={()=>
-
-                            setFocused(false)
-
-                        }
+                            }
 
 
-                        placeholder={placeholder}
+                            placeholder={placeholder}
 
 
-                        required={required}
+                            required={required}
 
 
-                        className="
-                            w-full
-                            bg-transparent
-                            border-none
-                            outline-none
-                            text-text
-                            placeholder:text-text-muted
-                            py-3
-                        "
+                            className={`
+                                w-full
+                                bg-transparent
+                                border-none
+                                outline-none
+                                text-text
+                                placeholder:text-text-muted
+                                py-3
+                                ${end ? 'pr-12' : ''}
+                            `}
 
-                    />
+                        />
+
+                        {end && (
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2 z-10 flex items-center">
+                                {end}
+                            </div>
+                        )}
+
+                    </div>
 
                 )
 
