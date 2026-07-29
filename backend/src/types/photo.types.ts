@@ -22,6 +22,9 @@ export interface Photo {
 
     image:string;
 
-    category?:PhotoCategory | null;
+    // category can be a structured object when using category_id, or a legacy string
+    category?: PhotoCategory | string | null;
+
+    category_id?: number | null;
 
 }

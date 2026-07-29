@@ -32,11 +32,8 @@ import PhotoCard from "./PhotoCard";
 
 
 interface PhotoGalleryProps {
-
-
-    categoryId?:number | null;
-
-
+    categoryId?: number | null;
+    categories?: { id: number; name: string }[];
 }
 
 
@@ -48,10 +45,9 @@ interface PhotoGalleryProps {
 
 
 export default function PhotoGallery({
-
-    categoryId
-
-}:PhotoGalleryProps){
+    categoryId,
+    categories,
+}: PhotoGalleryProps) {
 
 
 
@@ -133,11 +129,20 @@ export default function PhotoGallery({
         ?
 
         photos.filter(
+            photo => {
+                // category can be: { id:number, name:string }, a string name, or category_id number
+                if (photo.category && typeof photo.category === "object") {
+                    return photo.category.id === categoryId;
+                }
 
-            photo=>
+                if (photo.category && typeof photo.category === "string") {
+                    if (!categories || !categoryId) return false;
+                    const cat = categories.find((c) => c.id === categoryId);
+                    return Boolean(cat && cat.name === photo.category);
+                }
 
-                (photo.category && photo.category.id === categoryId) || photo.category_id === categoryId
-
+                return photo.category_id === categoryId;
+            },
         )
 
         :

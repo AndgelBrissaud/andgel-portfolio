@@ -4,6 +4,7 @@
 
 export const API_BASE_URL =
   import.meta.env.VITE_API_URL ?? "http://localhost:4000";
+import { showToast } from "./toastService";
 
 /* ==========================================================================
    IMAGE URL
@@ -185,8 +186,14 @@ export async function apiFetch<T>(
       const error = await response.json();
 
       message = error.message || message;
-    } catch {
-      //
+    } catch (e) {
+      console.warn("apiFetch: failed to parse error response JSON", e);
+    }
+    // show toast for API errors when handler available
+    try {
+      showToast(message, "error");
+    } catch (e) {
+      console.warn("showToast failed in apiFetch", e);
     }
 
     throw new Error(message);
@@ -396,8 +403,8 @@ async function fetchText(endpoint: string) {
     try {
       const error = await response.json();
       message = error.message || message;
-    } catch {
-      // ignore
+    } catch (e) {
+      console.warn("fetchText: failed to parse error response JSON", e);
     }
     throw new Error(message);
   }
@@ -432,6 +439,15 @@ const api = {
     }
 
     const data = await apiFetch<T>(endpoint, options);
+    try {
+      const d = data as unknown;
+      if (d && typeof d === "object" && "message" in d) {
+        const m = (d as { message?: unknown }).message;
+        showToast(typeof m === "string" ? m : String(m), "success");
+      }
+    } catch (e) {
+      console.warn("api.post: showToast failed", e);
+    }
     return { data };
   },
 
@@ -445,11 +461,29 @@ const api = {
     }
 
     const data = await apiFetch<T>(endpoint, options);
+    try {
+      const d = data as unknown;
+      if (d && typeof d === "object" && "message" in d) {
+        const m = (d as { message?: unknown }).message;
+        showToast(typeof m === "string" ? m : String(m), "success");
+      }
+    } catch (e) {
+      console.warn("api.put: showToast failed", e);
+    }
     return { data };
   },
 
   async delete<T = unknown>(endpoint: string): Promise<{ data: T }> {
     const data = await apiFetch<T>(endpoint, { method: "DELETE" });
+    try {
+      const d = data as unknown;
+      if (d && typeof d === "object" && "message" in d) {
+        const m = (d as { message?: unknown }).message;
+        showToast(typeof m === "string" ? m : String(m), "success");
+      }
+    } catch (e) {
+      console.warn("api.delete: showToast failed", e);
+    }
     return { data };
   },
 };

@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import SectionTitle from "../components/ui/SectionTitle";
 
 import PhotoGallery from "../components/photos/PhotoGallery";
+import CategoryPhotos from "../components/photos/CategoryPhotos";
 import usePhotoCategories from "../hooks/usePhotoCategories";
 import usePhotos from "../hooks/usePhotos";
 import { Link } from "react-router-dom";
@@ -19,7 +20,17 @@ export default function Photography(){
     const lastPhotoByCategory = useMemo(() => {
         const map: Record<number, Photo | null> = {};
         categories.forEach(cat => {
-            const photosInCat = photos.filter(p => (p.category && p.category.id === cat.id) || p.category_id === cat.id);
+            const photosInCat = photos.filter(p => {
+                if (p.category && typeof p.category === "object") {
+                    return p.category.id === cat.id;
+                }
+
+                if (p.category && typeof p.category === "string") {
+                    return p.category === cat.name;
+                }
+
+                return p.category_id === cat.id;
+            });
             if(photosInCat.length === 0){
                 map[cat.id] = null;
                 return;
@@ -130,28 +141,27 @@ export default function Photography(){
 
             {/* GALERIE PHOTOS */}
             {viewMode === "gallery" && (
-                <section className="pb-24">
-                    <div className="mx-auto max-w-7xl px-6">
-
-                        <div className="mb-8 flex items-center justify-between">
-                            <div>
-                                <button
-                                    onClick={() => setViewMode("categories")}
-                                    className="text-sm text-text-muted hover:text-white mr-4"
-                                >
-                                    ← Retour aux catégories
-                                </button>
-                                <h2 className="font-title text-3xl">
-                                    {selectedCategoryId ? (categories.find(c => c.id === selectedCategoryId)?.name) : "Toutes les photos"}
-                                </h2>
+                selectedCategoryId ? (
+                    <CategoryPhotos
+                        categoryId={selectedCategoryId}
+                        categoryName={categories.find(c => c.id === selectedCategoryId)?.name || "Catégorie"}
+                        categories={categories}
+                        onBack={() => setViewMode("categories")}
+                    />
+                ) : (
+                    <section className="pb-24">
+                        <div className="mx-auto max-w-7xl px-6">
+                            <div className="mb-8 flex items-center justify-between">
+                                <div>
+                                    <h2 className="font-title text-3xl">Toutes les photos</h2>
+                                </div>
+                                <div className="text-text-muted text-sm">Sélectionnez une image pour l'agrandir</div>
                             </div>
-                            <div className="text-text-muted text-sm">Sélectionnez une image pour l'agrandir</div>
+
+                            <PhotoGallery categoryId={null} categories={categories} />
                         </div>
-
-                        <PhotoGallery categoryId={selectedCategoryId} />
-
-                    </div>
-                </section>
+                    </section>
+                )
             )}
 
 

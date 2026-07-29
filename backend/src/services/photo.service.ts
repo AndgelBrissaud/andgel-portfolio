@@ -38,7 +38,25 @@ function parsePhoto(
         title:row.title,
 
 
-        category:row.category ?? undefined,
+        // return category_id when available and try to resolve category object
+        category_id: row.category_id ?? undefined,
+        category: (function(){
+            if(row.category_id){
+                try{
+                    const cat = db.prepare(`SELECT id, name, created_at FROM photo_categories WHERE id = ?`).get(row.category_id) as any;
+                    if(cat){
+                        return {
+                            id: Number(cat.id),
+                            name: String(cat.name),
+                            created_at: String(cat.created_at)
+                        };
+                    }
+                }catch(e){
+                    // ignore
+                }
+            }
+            return row.category ?? undefined;
+        })(),
 
 
         description:row.description ?? undefined,
@@ -205,42 +223,39 @@ export function createPhoto(
 
 
 
+    // support sending either a category name or a category id
+    let categoryName: string | null = null;
+    let categoryIdValue: number | null = null;
+
+    if (data.category !== undefined && data.category !== null) {
+        // if numeric string or number, treat as id
+        const asNumber = Number(data.category);
+        if (!Number.isNaN(asNumber) && String(asNumber) === String(data.category)) {
+            categoryIdValue = asNumber;
+        } else {
+            categoryName = String(data.category);
+        }
+    }
+
     const result = db.prepare(`
-
         INSERT INTO photos
-
         (
-
             title,
-
             category,
-
             description,
-
-            image
-
+            image,
+            category_id
         )
-
-        VALUES (?,?,?,?)
-
+        VALUES (?,?,?,?,?)
     `)
-
     .run(
-
-
         data.title,
-
-
-        data.category ?? null,
-
-
+        categoryName,
         data.description ?? null,
-
-
-        image
-
-
+        image,
+        categoryIdValue
     );
+
 
 
 

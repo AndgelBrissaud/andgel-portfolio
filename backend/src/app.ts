@@ -20,6 +20,9 @@ import serverManagementRoutes from "./routes/serverManagement.routes.js";
 
 const app = express();
 
+// Disable ETag for API responses to avoid 304 Not Modified responses for dynamic API data
+app.set("etag", false);
+
 
 
 

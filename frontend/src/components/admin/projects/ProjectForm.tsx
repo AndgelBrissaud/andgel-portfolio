@@ -26,6 +26,7 @@ import PhotoUploader from "../photos/PhotoUploader";
 
 
 import usePhotoCategories from "../../../hooks/usePhotoCategories";
+import { useToast } from "../../../context/ToastContext";
 
 import Button from "../../ui/Button";
 
@@ -148,6 +149,8 @@ export default function PhotoForm({
         loading:loadingCategories
 
     } = usePhotoCategories();
+
+    const { success: toastSuccess, error: toastError } = useToast();
 
 
 
@@ -377,6 +380,8 @@ export default function PhotoForm({
 
             setFile(null);
 
+            try { toastSuccess("Photo créée avec succès."); } catch (e) { console.error("toastSuccess failed", e); }
+
 
         }
 
@@ -401,6 +406,8 @@ export default function PhotoForm({
                 "Erreur lors de la création."
 
             );
+
+            try { toastError(error instanceof Error ? error.message : "Erreur lors de la création."); } catch (e) { console.error("toastError failed", e); }
 
 
         }

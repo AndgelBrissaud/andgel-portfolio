@@ -12,6 +12,8 @@ import App from "./App";
 
 
 import AuthProvider from "./context/AuthProvider";
+import { ToastProvider } from "./context/ToastContext";
+import Toaster from "./components/ui/Toaster";
 
 
 
@@ -40,19 +42,12 @@ if (!rootElement) {
 
 
 createRoot(rootElement).render(
-
     <StrictMode>
-
-
         <AuthProvider>
-
-
-            <App />
-
-
+            <ToastProvider>
+                <App />
+                <Toaster />
+            </ToastProvider>
         </AuthProvider>
-
-
     </StrictMode>
-
 );
