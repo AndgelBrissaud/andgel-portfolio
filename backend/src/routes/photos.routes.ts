@@ -2,15 +2,11 @@ import { Router } from "express";
 
 
 import {
-
     getPhotos,
-
     getPhotoById,
-
     createPhoto,
-
-    deletePhoto
-
+    deletePhoto,
+    fixPhotoCategories,
 } from "../controllers/photos.controller.js";
 
 
@@ -80,21 +76,16 @@ router.get(
 
 
 router.post(
-
     "/",
-
     authMiddleware,
-
-
-    upload.single(
-
-        "image"
-
-    ),
-
-
+    upload.single("image"),
     createPhoto
+);
 
+router.post(
+    "/fix-categories",
+    authMiddleware,
+    fixPhotoCategories
 );
 
 

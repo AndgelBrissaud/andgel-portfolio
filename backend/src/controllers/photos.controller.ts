@@ -15,6 +15,7 @@ import {
     deletePhoto as deletePhotoService
 
 } from "../services/photo.service.js";
+import { fixPhotoCategories as fixPhotoCategoriesService } from "../services/photo.service.js";
 
 
 import {
@@ -577,5 +578,29 @@ export function deletePhotoCategory(
 
     }
 
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN
+|--------------------------------------------------------------------------
+| Fix photo categories migration
+|--------------------------------------------------------------------------
+*/
+
+export function fixPhotoCategories(
+    _req:Request,
+    res:Response
+){
+    try{
+        const result = fixPhotoCategoriesService();
+        return res.json({ message: 'Migration complete', result });
+    }
+    catch(error){
+        console.error(error);
+        return res.status(500).json({ message: 'Erreur lors de la migration des catégories' });
+    }
 
 }

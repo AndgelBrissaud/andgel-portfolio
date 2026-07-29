@@ -539,3 +539,30 @@ export function deletePhoto(
     return true;
 
 }
+
+
+export function fixPhotoCategories(): { updated:number; found:number } {
+    const oldCategories = db.prepare(`
+        SELECT DISTINCT category
+        FROM photos
+        WHERE category IS NOT NULL
+        AND category != ''
+        AND (category_id IS NULL OR category_id = '')
+    `).all() as { category: string }[];
+
+    const insertCategory = db.prepare(`INSERT OR IGNORE INTO photo_categories(name) VALUES(?)`);
+    const getCategory = db.prepare(`SELECT id FROM photo_categories WHERE name = ?`);
+    const updatePhotoCategory = db.prepare(`UPDATE photos SET category_id = ? WHERE category = ?`);
+
+    let totalUpdated = 0;
+    for (const item of oldCategories) {
+        insertCategory.run(item.category);
+        const category = getCategory.get(item.category) as { id: number } | undefined;
+        if (category) {
+            const info = updatePhotoCategory.run(category.id, item.category);
+            totalUpdated += info.changes ?? 0;
+        }
+    }
+
+    return { updated: totalUpdated, found: oldCategories.length };
+}
