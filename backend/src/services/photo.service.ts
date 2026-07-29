@@ -41,7 +41,8 @@ function parsePhoto(
         // return category_id when available and try to resolve category object
         category_id: row.category_id ?? undefined,
         category: (function(){
-            if(row.category_id){
+            // Prefer resolving by category_id when explicitly present (allow 0 values to be handled)
+            if(row.category_id !== undefined && row.category_id !== null && row.category_id !== ''){
                 try{
                     const cat = db.prepare(`SELECT id, name, created_at FROM photo_categories WHERE id = ?`).get(row.category_id) as any;
                     if(cat){
@@ -55,6 +56,23 @@ function parsePhoto(
                     // ignore
                 }
             }
+
+            // Fallback: if a category name string was stored in the photo row, try to resolve it to a category object
+            if(row.category && typeof row.category === 'string'){
+                try{
+                    const catByName = db.prepare(`SELECT id, name, created_at FROM photo_categories WHERE name = ?`).get(String(row.category)) as any;
+                    if(catByName){
+                        return {
+                            id: Number(catByName.id),
+                            name: String(catByName.name),
+                            created_at: String(catByName.created_at)
+                        };
+                    }
+                }catch(e){
+                    // ignore
+                }
+            }
+
             return row.category ?? undefined;
         })(),
 
