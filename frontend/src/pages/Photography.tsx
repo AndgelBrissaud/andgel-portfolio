@@ -87,22 +87,6 @@ export default function Photography(){
 
                         <div className="mb-8">
 
-                            <div className="flex gap-3 mb-6">
-                                <button
-                                    onClick={() => { setSelectedCategoryId(null); setViewMode("gallery"); }}
-                                    className={`rounded-full px-4 py-2 text-sm ${selectedCategoryId===null && viewMode==="gallery" ? "bg-accent text-black" : "border border-white/10 text-white/70"}`}>
-                                    Toutes
-                                </button>
-                                {categories.map(cat => (
-                                    <button
-                                        key={cat.id}
-                                        onClick={() => { setSelectedCategoryId(cat.id); setViewMode("gallery"); }}
-                                        className={`rounded-full px-4 py-2 text-sm ${selectedCategoryId===cat.id && viewMode==="gallery" ? "bg-accent text-black" : "border border-white/10 text-white/70"}`}>
-                                        {cat.name}
-                                    </button>
-                                ))}
-                            </div>
-
                             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {categories.map(cat => {
                                     const last = lastPhotoByCategory[cat.id];

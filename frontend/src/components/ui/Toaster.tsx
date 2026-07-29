@@ -26,13 +26,15 @@ export default function Toaster() {
   const { toasts, remove } = useToast();
 
   return (
-    <div className="fixed right-6 top-6 z-50 flex flex-col gap-3">
+    <div className="fixed right-6 top-6 z-[60] flex flex-col gap-3 pointer-events-none">
       {toasts.map((t) => (
         <div
           key={t.id}
-          role="status"
           aria-live="polite"
           onClick={() => remove(t.id)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') remove(t.id); }}
           className={
             `max-w-sm w-full rounded-xl p-3 shadow-lg text-sm cursor-pointer transform transition-all duration-300 ease-out hover:scale-[1.02] flex items-start gap-3 select-none ` +
             (t.type === "success"
@@ -44,6 +46,8 @@ export default function Toaster() {
           style={{
             boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
             willChange: "transform, opacity",
+            pointerEvents: 'auto',
+            animation: 'toast-in 320ms cubic-bezier(.22,1,.36,1)'
           }}
         >
           <div className="flex-none mt-0.5" aria-hidden>

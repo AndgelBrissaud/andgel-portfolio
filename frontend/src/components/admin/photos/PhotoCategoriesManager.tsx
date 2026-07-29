@@ -10,6 +10,7 @@ import type { PhotoCategory } from "../../../types/photo";
 
 import PremiumInput from "../../ui/PremiumInput";
 import Button from "../../ui/Button";
+import { useToast } from "../../../context/ToastContext";
 
 export default function PhotoCategoriesManager(){
 
@@ -18,6 +19,7 @@ export default function PhotoCategoriesManager(){
     const [loading, setLoading] = useState(true);
     const [creating, setCreating] = useState(false);
     const [error, setError] = useState("");
+    const { success: toastSuccess, error: toastError } = useToast();
 
     const sortedCategories = useMemo(() => {
         return [...categories].sort((a,b) => a.name.localeCompare(b.name));
@@ -46,17 +48,20 @@ export default function PhotoCategoriesManager(){
             return;
         }
 
-        try{
-            setCreating(true);
-            setError("");
-            const category = await createPhotoCategory(value);
-            setCategories(current => [...current, category]);
-            setName("");
-        } catch(err){
-            setError(err instanceof Error ? err.message : "Erreur création catégorie.");
-        } finally{
-            setCreating(false);
-        }
+            try{
+                setCreating(true);
+                setError("");
+                const category = await createPhotoCategory(value);
+                setCategories(current => [...current, category]);
+                setName("");
+                try { console.debug("PhotoCategoriesManager: calling toastSuccess"); toastSuccess("Catégorie créée."); } catch (e) { console.error("toastSuccess failed", e); }
+            } catch(err){
+                const msg = err instanceof Error ? err.message : "Erreur création catégorie.";
+                setError(msg);
+                try { toastError(msg); } catch (e) { console.error("toastError failed", e); }
+            } finally{
+                setCreating(false);
+            }
     }
 
     async function handleDelete(category: PhotoCategory){
@@ -66,8 +71,11 @@ export default function PhotoCategoriesManager(){
         try{
             await deletePhotoCategory(category.id);
             setCategories(current => current.filter(item => item.id !== category.id));
+            try { console.debug("PhotoCategoriesManager: calling toastSuccess delete"); toastSuccess("Catégorie supprimée."); } catch (e) { console.error("toastSuccess failed", e); }
         } catch(err){
-            setError(err instanceof Error ? err.message : "Erreur suppression catégorie.");
+            const msg = err instanceof Error ? err.message : "Erreur suppression catégorie.";
+            setError(msg);
+            try { toastError(msg); } catch (e) { console.error("toastError failed", e); }
         }
     }
 

@@ -9,11 +9,14 @@ export function clearToastHandler() {
 }
 
 export function showToast(message: string, type: 'info'|'success'|'error' = 'info', duration = 4000) {
-  if (_handler) {
-    try {
-      _handler(message, type, duration);
-    } catch {
-      // ignore
-    }
+  if (!_handler) {
+    console.warn("showToast called but no handler registered", { message, type });
+    return;
+  }
+
+  try {
+    _handler(message, type, duration);
+  } catch (e) {
+    console.error("Toast handler threw", e);
   }
 }

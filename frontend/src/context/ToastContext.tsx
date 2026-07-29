@@ -32,6 +32,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const show = useCallback((message: string, type: ToastType = "info", duration = 4000) => {
     const id = idRef.current++;
     const item: ToastItem = { id, type, message, duration };
+    console.debug("ToastProvider: show", { id, message, type, duration });
     setToasts((t) => [item, ...t]);
     if (duration > 0) {
       window.setTimeout(() => remove(id), duration);
