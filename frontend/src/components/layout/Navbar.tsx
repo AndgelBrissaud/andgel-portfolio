@@ -77,7 +77,10 @@ export default function Navbar() {
     const navigate = useNavigate();
     const auth = useAuth();
 
-    const isAdminPath = location.pathname.startsWith("/admin");
+    const isAdminPath =
+        location.pathname.startsWith("/admin") ||
+        // support HashRouter where pathname may be "/" and hash contains the route
+        (location.hash && location.hash.startsWith("#/admin"));
 
     const adminLinks = [
         { label: "Dashboard", path: "/admin" },
@@ -265,17 +268,48 @@ export default function Navbar() {
                         </div>
 
                         <ul className="mt-2 flex flex-col gap-4">
-                            {links.map((link) => (
-                                <li key={link.path}>
-                                    <NavLink
-                                        to={link.path}
-                                        onClick={() => setOpen(false)}
-                                        className={({isActive}) => `block w-full text-center text-lg py-3 rounded ${isActive ? 'text-accent font-semibold' : 'text-text-soft hover:text-accent'}`}
-                                    >
-                                        {link.label}
-                                    </NavLink>
-                                </li>
-                            ))}
+                            {isAdminPath ? (
+                                <>
+                                    {adminLinks.map((link) => (
+                                        <li key={link.path}>
+                                            <button
+                                                onClick={() => {
+                                                    navigate(link.path);
+                                                    setOpen(false);
+                                                }}
+                                                className="block w-full text-center text-lg py-3 rounded text-accent font-semibold"
+                                            >
+                                                {link.label}
+                                            </button>
+                                        </li>
+                                    ))}
+
+                                    <li>
+                                        <button
+                                            onClick={() => {
+                                                auth.logout();
+                                                navigate('/login');
+                                                setOpen(false);
+                                            }}
+                                            className="block w-full text-center text-lg py-3 rounded text-red-300"
+                                        >
+                                            Déconnexion
+                                        </button>
+                                    </li>
+                                </>
+                            ) : (
+                                links.map((link) => (
+                                    <li key={link.path}>
+                                        <NavLink
+                                            to={link.path}
+                                            onClick={() => setOpen(false)}
+                                            className={({isActive}) => `block w-full text-center text-lg py-3 rounded ${isActive ? 'text-accent font-semibold' : 'text-text-soft hover:text-accent'}`}
+                                        >
+                                            {link.label}
+                                        </NavLink>
+                                    </li>
+                                ))
+                            )}
                         </ul>
                     </nav>
                 </div>
