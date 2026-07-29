@@ -8,6 +8,7 @@ import authRoutes from "./routes/auth.routes.js";
 import projectsRoutes from "./routes/projects.routes.js";
 import photosRoutes from "./routes/photos.routes.js";
 import photoCategoriesRoutes from "./routes/photoCategories.routes.js";
+import serverManagementRoutes from "./routes/serverManagement.routes.js";
 
 
 
@@ -295,6 +296,21 @@ app.use(
     "/photo-categories",
 
     photoCategoriesRoutes
+
+);
+
+
+/*
+|--------------------------------------------------------------------------
+| SERVER MANAGEMENT
+|--------------------------------------------------------------------------
+*/
+
+app.use(
+
+    "/server",
+
+    serverManagementRoutes
 
 );
 
