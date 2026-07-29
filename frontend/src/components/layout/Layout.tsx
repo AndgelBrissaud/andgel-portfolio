@@ -229,7 +229,7 @@ export default function Layout() {
 
                             <Route
 
-                                path="/admin"
+                                path="/admin/*"
 
                                 element={
 
