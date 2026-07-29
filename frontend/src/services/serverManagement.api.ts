@@ -5,6 +5,7 @@ import type {
   ProjectStatus,
   ServerActionResponse,
   ServerProject,
+  SystemInfo,
 } from "../types/server";
 
 
@@ -241,8 +242,8 @@ class ServerManagementApi {
   }
 
 
-  async getSystemInfo(): Promise<any> {
-    const { data } = await api.get("/server/system");
+  async getSystemInfo(): Promise<SystemInfo> {
+    const { data } = await api.get<SystemInfo>("/server/system");
 
     return data;
   }

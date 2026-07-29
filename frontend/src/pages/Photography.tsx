@@ -1,13 +1,37 @@
+import { useMemo, useState } from "react";
 import SectionTitle from "../components/ui/SectionTitle";
 
 import PhotoGallery from "../components/photos/PhotoGallery";
 import usePhotoCategories from "../hooks/usePhotoCategories";
+import usePhotos from "../hooks/usePhotos";
 import { Link } from "react-router-dom";
+import { getImageUrl } from "../services/api";
+import type { Photo } from "../types/photo";
 
 
 export default function Photography(){
 
-    const { categories, loading, error } = usePhotoCategories();
+    const { categories, loading: categoriesLoading, error: categoriesError } = usePhotoCategories();
+    const { photos, loading: photosLoading } = usePhotos();
+    const [ selectedCategoryId, setSelectedCategoryId ] = useState<number | null>(null);
+
+    const lastPhotoByCategory = useMemo(() => {
+        const map: Record<number, Photo | null> = {};
+        categories.forEach(cat => {
+            const photosInCat = photos.filter(p => p.category?.id === cat.id);
+            if(photosInCat.length === 0){
+                map[cat.id] = null;
+                return;
+            }
+            photosInCat.sort((a,b) => {
+                const ta = a.created_at ? new Date(a.created_at).getTime() : 0;
+                const tb = b.created_at ? new Date(b.created_at).getTime() : 0;
+                return tb - ta;
+            });
+            map[cat.id] = photosInCat[0];
+        });
+        return map;
+    }, [categories, photos]);
 
     return (
 
@@ -27,19 +51,19 @@ export default function Photography(){
             </section>
 
 
-            {/* GALERIE PHOTOS */}
-            <section className="pb-24">
+            {/* CATÉGORIES */}
+            <section className="pb-12">
                 <div className="mx-auto max-w-7xl px-6">
 
-                    {loading && (
+                    {categoriesLoading && (
                         <p className="text-text-muted">Chargement des catégories...</p>
                     )}
 
-                    {error && (
-                        <p className="text-red-400">{error}</p>
+                    {categoriesError && (
+                        <p className="text-red-400">{categoriesError}</p>
                     )}
 
-                    {!loading && !error && categories.length === 0 ? (
+                    {!categoriesLoading && !categoriesError && categories.length === 0 ? (
 
                         <div className="text-center py-12">
                             <h3 className="text-xl font-semibold mb-2">Aucune catégorie</h3>
@@ -49,9 +73,65 @@ export default function Photography(){
 
                     ) : (
 
-                        <PhotoGallery />
+                        <div className="mb-8">
+
+                            <div className="flex gap-3 mb-6">
+                                <button
+                                    onClick={()=>setSelectedCategoryId(null)}
+                                    className={`rounded-full px-4 py-2 text-sm ${selectedCategoryId===null ? "bg-accent text-black" : "border border-white/10 text-white/70"}`}>
+                                    Toutes
+                                </button>
+                                {categories.map(cat => (
+                                    <button
+                                        key={cat.id}
+                                        onClick={()=>setSelectedCategoryId(cat.id)}
+                                        className={`rounded-full px-4 py-2 text-sm ${selectedCategoryId===cat.id ? "bg-accent text-black" : "border border-white/10 text-white/70"}`}>
+                                        {cat.name}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {categories.map(cat => {
+                                    const last = lastPhotoByCategory[cat.id];
+                                    return (
+                                        <button
+                                            key={cat.id}
+                                            onClick={()=>setSelectedCategoryId(cat.id)}
+                                            className={`text-left overflow-hidden rounded-2xl border ${selectedCategoryId===cat.id ? "border-accent" : "border-white/10"} bg-surface`}>
+                                            <div className="aspect-[16/9] bg-gray-800/30">
+                                                {photosLoading ? (
+                                                    <div className="flex items-center justify-center h-full text-text-muted">Chargement...</div>
+                                                ) : last ? (
+                                                    <img src={getImageUrl(last.image)} alt={last.title} className="h-full w-full object-cover" />
+                                                ) : (
+                                                    <div className="flex items-center justify-center h-full text-text-muted">
+                                                        Aucune photo
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="p-4">
+                                                <h3 className="font-medium">{cat.name}</h3>
+                                                <p className="text-sm text-text-muted mt-1">{last ? last.title : "Aucune photo dans cette catégorie"}</p>
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                        </div>
 
                     )}
+
+                </div>
+            </section>
+
+
+            {/* GALERIE PHOTOS */}
+            <section className="pb-24">
+                <div className="mx-auto max-w-7xl px-6">
+
+                    <PhotoGallery categoryId={selectedCategoryId} />
 
                 </div>
             </section>
