@@ -207,9 +207,9 @@ export default function AdminServer() {
         "
       >
         <div className="mb-6">
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2">
             {/* Left: system cards */}
-            <div className="md:col-span-2 grid gap-3">
+            <div className="md:col-span-1 grid gap-3">
               <div className="rounded-2xl border border-white/10 bg-surface p-4">
                 <div className="flex items-center justify-between">
                   <div>
@@ -270,8 +270,8 @@ export default function AdminServer() {
             </div>
 
             {/* Right: controls & quick stats */}
-            <aside className="space-y-3">
-              <div className="rounded-2xl border border-white/10 bg-surface p-4">
+            <aside className="space-y-3 md:w-72">
+                <div className="rounded-2xl border border-white/10 bg-surface p-3">
                 <p className="text-sm text-text-muted">Actions</p>
                 <div className="mt-3 flex flex-col gap-2">
                   <button
