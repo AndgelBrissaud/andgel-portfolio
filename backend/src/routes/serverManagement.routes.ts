@@ -164,6 +164,18 @@ router.get("/projects/:id/compose", async (req, res) => {
   }
 });
 
+router.get("/system", async (_req, res) => {
+  try {
+    const info = await serverManagementController.getSystemInfo();
+
+    return res.json(info);
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({ message: "Erreur récupération système" });
+  }
+});
+
 router.put("/projects/:id/compose", async (req, res) => {
   try {
     const id = Number(req.params.id);

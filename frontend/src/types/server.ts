@@ -69,3 +69,16 @@ export interface ComposeValidationError {
 
   errors: string[];
 }
+
+export interface SystemInfo {
+  memory: {
+    total: number;
+    used: number;
+    free: number;
+  };
+  disk: {
+    total: number;
+    used: number;
+    free: number;
+  } | null;
+}

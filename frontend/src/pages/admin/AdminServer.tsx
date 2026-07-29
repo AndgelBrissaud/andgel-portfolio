@@ -33,6 +33,9 @@ export default function AdminServer() {
 
   const [logsLoading, setLogsLoading] = useState(false);
 
+  const [systemInfo, setSystemInfo] = useState<import("../../types/server").SystemInfo | null>(null);
+  const [systemLoading, setSystemLoading] = useState(false);
+
   const loadProjects = useCallback(async () => {
     try {
       setLoading(true);
@@ -96,6 +99,24 @@ export default function AdminServer() {
     void Promise.resolve().then(loadLogs);
   }, [selectedLogs]);
 
+  useEffect(() => {
+    async function loadSystem() {
+      try {
+        setSystemLoading(true);
+
+        const info = await serverManagementApi.getSystemInfo();
+
+        setSystemInfo(info);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setSystemLoading(false);
+      }
+    }
+
+    void Promise.resolve().then(loadSystem);
+  }, []);
+
   async function saveCompose(content: string) {
     if (!selectedComposeProject) return;
 
@@ -127,6 +148,56 @@ export default function AdminServer() {
           des services du portfolio.
         "
       >
+        <div className="mb-4 flex items-center justify-end">
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={async () => {
+              const name = window.prompt("Nom du projet (ex: mon-projet)");
+              if (!name) return;
+
+              const path = window.prompt("Chemin du projet sur le serveur (ex: /opt/docker/mon-projet)");
+              if (!path) return;
+
+              try {
+                await serverManagementApi.addProject(name, path);
+
+                await loadProjects();
+
+                alert("Projet ajouté");
+              } catch (error) {
+                console.error(error);
+                alert(error instanceof Error ? error.message : "Erreur");
+              }
+            }}
+          >
+            ➕ Ajouter un projet
+          </button>
+        </div>
+
+        <div className="mb-6">
+          <h4 className="font-medium mb-2">Ressources serveur</h4>
+
+          {systemLoading || !systemInfo ? (
+            <div className="text-text-muted">Chargement des ressources...</div>
+          ) : (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="rounded-2xl border border-white/10 bg-surface p-4">
+                <p className="text-sm text-text-muted">Mémoire</p>
+                <p className="mt-2 font-title text-xl">
+                  {Math.round(systemInfo.memory.used / (1024 * 1024))} Mo / {Math.round(systemInfo.memory.total / (1024 * 1024))} Mo
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-surface p-4">
+                <p className="text-sm text-text-muted">Disque (/) </p>
+                <p className="mt-2 font-title text-xl">
+                  {systemInfo.disk ? `${Math.round(systemInfo.disk.used / (1024 * 1024 * 1024))} Go / ${Math.round(systemInfo.disk.total / (1024 * 1024 * 1024))} Go` : "N/A"}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
         <div
           className="
             grid

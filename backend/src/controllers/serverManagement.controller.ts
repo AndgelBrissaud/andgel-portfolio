@@ -11,6 +11,8 @@ import composeValidationUtils from "../utils/composeValidation.utils.js";
 import logsUtils from "../utils/logs.utils.js";
 
 import path from "path";
+import os from "os";
+import { execa } from "execa";
 
 export interface ServerProject {
   id: number;
@@ -386,6 +388,58 @@ class ServerManagementService {
     }
 
     return project;
+  }
+
+  async getSystemInfo() {
+    const totalMem = os.totalmem();
+    const freeMem = os.freemem();
+    const usedMem = totalMem - freeMem;
+
+    // Get disk usage for root path
+    try {
+      const { stdout } = await execa("df", ["-B1", "/"]);
+
+      const lines = stdout.trim().split("\n");
+
+      if (lines.length < 2) {
+        return {
+          memory: {
+            total: totalMem,
+            used: usedMem,
+            free: freeMem,
+          },
+          disk: null,
+        };
+      }
+
+      const parts = lines[1].trim().split(/\s+/);
+
+      const totalDisk = Number(parts[1]);
+      const usedDisk = Number(parts[2]);
+      const freeDisk = Number(parts[3]);
+
+      return {
+        memory: {
+          total: totalMem,
+          used: usedMem,
+          free: freeMem,
+        },
+        disk: {
+          total: totalDisk,
+          used: usedDisk,
+          free: freeDisk,
+        },
+      };
+    } catch (error) {
+      return {
+        memory: {
+          total: totalMem,
+          used: usedMem,
+          free: freeMem,
+        },
+        disk: null,
+      };
+    }
   }
 }
 

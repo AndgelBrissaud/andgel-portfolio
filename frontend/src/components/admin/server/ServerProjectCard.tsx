@@ -51,6 +51,7 @@ export default function ServerProjectCard({
       </div>
 
       <ServerProjectActions
+        project={project}
         onRefresh={onRefresh}
         onCompose={() => onSelectCompose(project)}
         onFrontendLogs={() => onSelectLogs(project, "frontend")}

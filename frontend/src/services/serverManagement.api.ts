@@ -241,6 +241,13 @@ class ServerManagementApi {
   }
 
 
+  async getSystemInfo(): Promise<any> {
+    const { data } = await api.get("/server/system");
+
+    return data;
+  }
+
+
 }
 
 
