@@ -2,6 +2,8 @@ import type {
     AdminSection
 } from "../../../pages/Admin";
 
+import { NavLink } from "react-router-dom";
+
 
 
 
@@ -15,75 +17,27 @@ interface AdminHeaderProps {
     onNavigate:(
 
         section:AdminSection
+                <nav className="flex items-center gap-3">
+                    <NavLink to="/" className="text-sm text-text-soft hover:text-accent px-3 py-2 rounded-md">Accueil</NavLink>
 
-    )=>void;
+                    <div className="h-6 w-px bg-white/5" />
 
-
-    onLogout:()=>void;
-
-
-}
-
-
-
-
-
-
-
-
-
-export default function AdminHeader({
-
-    activeSection,
-
-    onNavigate,
-
-    onLogout
-
-}:AdminHeaderProps){
-
-
-
-    const items:{
-
-
-        id:AdminSection;
-
-
-        label:string;
-
-
-    }[] = [
-
-
-        {
-
-            id:"dashboard",
-
-            label:"Dashboard"
-
-        },
-
-
-        {
-
-            id:"projects",
-
-            label:"Projets"
-
-        },
-
-
-        {
-
-            id:"photos",
-
-            label:"Photos"
-
-        },
-
-
-        {
+                    <div className="flex flex-wrap gap-3">
+                        {
+                            items.map(item => (
+                                <button
+                                    key={item.id}
+                                    onClick={() => onNavigate(item.id)}
+                                    className={
+                                        `rounded-xl px-4 py-2 text-sm transition ${activeSection === item.id ? 'bg-accent text-black' : 'bg-white/5 text-white hover:bg-white/10'}`
+                                    }
+                                >
+                                    {item.label}
+                                </button>
+                            ))
+                        }
+                    </div>
+                </nav>
 
             id:"server",
 
@@ -103,144 +57,33 @@ export default function AdminHeader({
 
 
     return (
+import type { AdminSection } from "../../../pages/Admin";
 
-        <header
+interface AdminHeaderProps {
+    activeSection: AdminSection;
+    onNavigate: (section: AdminSection) => void;
+    onLogout: () => void;
+}
 
-            className="
-                border-b
-                border-white/10
-                bg-background
-                px-6
-                py-5
-            "
+const labels: Record<AdminSection, string> = {
+    dashboard: "Dashboard",
+    projects: "Projets",
+    photos: "Photos",
+    server: "Serveur",
+};
 
-        >
+export default function AdminHeader({ activeSection, onNavigate, onLogout }: AdminHeaderProps) {
+    return (
+        <header className="border-b border-white/10 bg-background px-6 py-4">
+            <div className="mx-auto flex max-w-7xl items-center justify-between gap-6">
+                <div>
+                    <h2 className="font-title text-xl">{labels[activeSection]}</h2>
+                </div>
 
-
-
-            <div
-
-                className="
-                    mx-auto
-                    flex
-                    max-w-7xl
-                    items-center
-                    justify-between
-                    gap-6
-                "
-
-            >
-
-
-
-                <nav
-
-                    className="
-                        flex
-                        flex-wrap
-                        gap-3
-                    "
-
-                >
-
-
-
-                    {
-
-                        items.map(item=>(
-
-
-                            <button
-
-                                key={item.id}
-
-                                onClick={()=>{
-
-                                    onNavigate(
-
-                                        item.id
-
-                                    );
-
-                                }}
-
-                                className={
-
-                                    `
-                                    rounded-xl
-                                    px-5
-                                    py-3
-                                    text-sm
-                                    transition
-
-                                    ${
-                                        activeSection === item.id
-
-                                        ?
-
-                                        "bg-accent text-black"
-
-                                        :
-
-                                        "bg-white/5 text-white hover:bg-white/10"
-
-                                    }
-                                    `
-
-                                }
-
-                            >
-
-                                {item.label}
-
-                            </button>
-
-
-                        ))
-
-                    }
-
-
-
-                </nav>
-
-
-
-
-
-
-
-
-
-                <button
-
-                    onClick={onLogout}
-
-                    className="
-                        rounded-xl
-                        bg-red-500/10
-                        px-5
-                        py-3
-                        text-sm
-                        text-red-300
-                        transition
-                        hover:bg-red-500/20
-                    "
-
-                >
-
-                    Déconnexion
-
-                </button>
-
-
-
+                <div className="flex items-center gap-3">
+                    <button onClick={onLogout} className="rounded-xl bg-red-500/10 px-4 py-2 text-sm text-red-300 hover:bg-red-500/20">Déconnexion</button>
+                </div>
             </div>
-
-
-
         </header>
-
     );
-
 }

@@ -37,9 +37,7 @@ import AdminServer from "./admin/AdminServer";
 
 
 export type AdminSection =
-
-    | "dashboard"
-    | "projects"
+    import { useNavigate, useLocation } from "react-router-dom";
     | "photos"
     | "server";
 
@@ -54,9 +52,9 @@ export type AdminSection =
 export default function Admin(){
 
 
-    const navigate = useNavigate();
-
-
+        if (authenticated) {
+            return;
+        }
 
 
 
@@ -65,6 +63,33 @@ export default function Admin(){
         activeSection,
 
         setActiveSection
+
+    const location = useLocation();
+
+    useEffect(() => {
+        // derive active section from URL
+        const base = location.pathname.replace(/^\/admin\/?/, "");
+
+        if (!base || base === "") {
+            setActiveSection("dashboard");
+            return;
+        }
+
+        if (base.startsWith("projects")) {
+            setActiveSection("projects");
+            return;
+        }
+
+        if (base.startsWith("photos")) {
+            setActiveSection("photos");
+            return;
+        }
+
+        if (base.startsWith("server")) {
+            setActiveSection("server");
+            return;
+        }
+    }, [location.pathname]);
 
     ] = useState<AdminSection>("dashboard");
 

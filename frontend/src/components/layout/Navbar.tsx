@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import useAuth from "../../context/useAuth";
 
 
 export default function Navbar() {
@@ -70,6 +71,19 @@ export default function Navbar() {
             path:"/contact"
         }
 
+    ];
+
+    const location = useLocation();
+    const navigate = useNavigate();
+    const auth = useAuth();
+
+    const isAdminPath = location.pathname.startsWith("/admin");
+
+    const adminLinks = [
+        { label: "Dashboard", path: "/admin" },
+        { label: "Projets", path: "/admin/projects" },
+        { label: "Photos", path: "/admin/photos" },
+        { label: "Serveur", path: "/admin/server" },
     ];
 
 
@@ -170,69 +184,27 @@ export default function Navbar() {
 
                 {/* Menu desktop */}
 
-
-                <nav
-
-                    className="
-                        hidden
-                        md:flex
-                        items-center
-                        gap-10
-                    "
-
-                >
-
-
-                    {
-
-                        links.map((link)=>(
-
-
+                <nav className="hidden md:flex items-center gap-6">
+                    {isAdminPath ? (
+                        <>
+                            {adminLinks.map((link) => (
+                                <button key={link.path} onClick={() => navigate(link.path)} className="text-sm px-3 py-2 rounded-md bg-white/5 text-white hover:bg-white/10">
+                                    {link.label}
+                                </button>
+                            ))}
+                            <button onClick={() => { auth.logout(); navigate('/login'); }} className="ml-4 text-sm rounded-md px-3 py-2 bg-red-500/10 text-red-300 hover:bg-red-500/20">Déconnexion</button>
+                        </>
+                    ) : (
+                        links.map((link) => (
                             <NavLink
-
                                 key={link.path}
-
                                 to={link.path}
-
-                                className={({isActive})=>
-                                    
-                                    `
-                                    relative
-                                    text-sm
-                                    uppercase
-                                    tracking-[0.2em]
-                                    transition
-                                    duration-300
-
-                                    ${
-                                        isActive
-
-                                        ?
-
-                                        "text-accent"
-
-                                        :
-
-                                        "text-text-soft hover:text-accent"
-
-                                    }
-
-                                    `
-                                }
-
+                                className={({ isActive }) => `relative text-sm uppercase tracking-[0.2em] transition duration-300 ${isActive ? 'text-accent' : 'text-text-soft hover:text-accent'}`}
                             >
-
                                 {link.label}
-
-
                             </NavLink>
-
-
                         ))
-
-                    }
-
-
+                    )}
                 </nav>
 
 
@@ -243,71 +215,19 @@ export default function Navbar() {
 
                 {/* Bouton mobile */}
 
-
                 <button
-
                     onClick={() => setOpen(!open)}
-
-                    className="
-                        md:hidden
-                        flex
-                        flex-col
-                        gap-2
-                        p-2
-                    "
-
+                    className="md:hidden p-2"
                     aria-label="Menu"
-
+                    aria-expanded={open}
+                    aria-controls="mobile-menu"
                 >
-
-                    <span
-
-                        className={`
-                            block
-                            w-7
-                            h-px
-                            bg-text
-                            transition
-
-                            ${
-                                open
-                                ?
-                                "rotate-45 translate-y-2"
-
-                                :
-
-                                ""
-
-                            }
-                        `}
-
-                    />
-
-
-                    <span
-
-                        className={`
-                            block
-                            w-7
-                            h-px
-                            bg-text
-                            transition
-
-                            ${
-                                open
-                                ?
-                                "-rotate-45"
-
-                                :
-
-                                ""
-
-                            }
-                        `}
-
-                    />
-
-
+                    <span className="sr-only">Ouvrir le menu</span>
+                    <div className={`w-7 h-7 relative flex items-center justify-center`}> 
+                        <span className={`block absolute w-6 h-[2px] bg-text transition-transform duration-300 ${open ? 'rotate-45' : '-translate-y-1.5'}`} />
+                        <span className={`block absolute w-6 h-[2px] bg-text transition-opacity duration-300 ${open ? 'opacity-0' : 'opacity-100'}`} />
+                        <span className={`block absolute w-6 h-[2px] bg-text transition-transform duration-300 ${open ? '-rotate-45' : 'translate-y-1.5'}`} />
+                    </div>
                 </button>
 
 
@@ -325,85 +245,40 @@ export default function Navbar() {
             {/* Menu mobile */}
 
 
+            {/* Menu mobile: overlay */}
             <div
-
-                className={`
-                    md:hidden
-                    overflow-hidden
-                    transition-all
-                    duration-500
-
-                    ${
-                        open
-
-                        ?
-
-                        "max-h-screen opacity-100"
-
-                        :
-
-                        "max-h-0 opacity-0"
-
-                    }
-
-                    bg-background/95
-                    backdrop-blur-xl
-                `}
-
+                id="mobile-menu"
+                className={`md:hidden fixed inset-0 z-40 transition-all duration-300 ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
             >
+                {/* backdrop */}
+                <button
+                    aria-hidden
+                    onClick={() => setOpen(false)}
+                    className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity ${open ? 'opacity-100' : 'opacity-0'}`}
+                />
 
+                {/* panel */}
+                <div className={`relative h-full flex items-center justify-center p-6`}> 
+                    <nav className={`bg-background/95 w-full max-w-md rounded-xl p-6 transform transition-transform ${open ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
+                        <div className="flex justify-end">
+                            <button aria-label="Fermer" className="p-2" onClick={() => setOpen(false)}>✕</button>
+                        </div>
 
-                <nav
-
-                    className="
-                        flex
-                        flex-col
-                        gap-8
-                        px-6
-                        py-10
-                    "
-
-                >
-
-
-                    {
-
-                        links.map((link)=>(
-
-
-                            <NavLink
-
-                                key={link.path}
-
-                                to={link.path}
-
-                                onClick={() => setOpen(false)}
-
-                                className="
-                                    text-text-soft
-                                    uppercase
-                                    tracking-[0.2em]
-                                    text-sm
-                                    hover:text-accent
-                                    transition
-                                "
-
-                            >
-
-                                {link.label}
-
-
-                            </NavLink>
-
-
-                        ))
-
-                    }
-
-
-                </nav>
-
-
+                        <ul className="mt-2 flex flex-col gap-4">
+                            {links.map((link) => (
+                                <li key={link.path}>
+                                    <NavLink
+                                        to={link.path}
+                                        onClick={() => setOpen(false)}
+                                        className={({isActive}) => `block w-full text-center text-lg py-3 rounded ${isActive ? 'text-accent font-semibold' : 'text-text-soft hover:text-accent'}`}
+                                    >
+                                        {link.label}
+                                    </NavLink>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                </div>
             </div>
 
 

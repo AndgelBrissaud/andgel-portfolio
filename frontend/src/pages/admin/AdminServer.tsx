@@ -7,6 +7,7 @@ import ComposeEditor from "../../components/admin/server/ComposeEditor";
 import LogsViewer from "../../components/admin/server/LogsViewer";
 
 import serverManagementApi from "../../services/serverManagement.api";
+import AddProjectForm from "../../components/admin/server/AddProjectForm";
 
 import type { ServerProject } from "../../types/server";
 
@@ -274,30 +275,7 @@ export default function AdminServer() {
                 <div className="rounded-2xl border border-white/10 bg-surface p-3">
                 <p className="text-sm text-text-muted">Actions</p>
                 <div className="mt-3 flex flex-col gap-2">
-                  <button
-                    type="button"
-                    className="btn-primary w-full"
-                    onClick={async () => {
-                      const name = window.prompt("Nom du projet (ex: mon-projet)");
-                      if (!name) return;
-
-                      const path = window.prompt("Chemin du projet sur le serveur (ex: /opt/docker/mon-projet)");
-                      if (!path) return;
-
-                      try {
-                        await serverManagementApi.addProject(name, path);
-
-                        await loadProjects();
-
-                        alert("Projet ajouté");
-                      } catch (error) {
-                        console.error(error);
-                        alert(error instanceof Error ? error.message : "Erreur");
-                      }
-                    }}
-                  >
-                    ➕ Ajouter un projet
-                  </button>
+                  <AddProjectForm onAdded={() => void loadProjects()} />
 
                   <button
                     type="button"
