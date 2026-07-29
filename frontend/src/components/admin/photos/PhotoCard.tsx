@@ -7,6 +7,8 @@ import type {
     Photo
 } from "../../../types/photo";
 
+import Button from "../../ui/Button";
+
 
 
 
@@ -277,31 +279,11 @@ export default function PhotoCard({
 
                                 onEdit && (
 
-                                    <button
-
-                                        type="button"
-
-                                        onClick={()=>onEdit(photo)}
-
-                                        className="
-                                            rounded-lg
-                                            border
-                                            border-white/10
-                                            px-3
-                                            py-2
-                                            text-xs
-                                            text-text-soft
-                                            transition-all
-                                            duration-300
-                                            hover:border-accent/40
-                                            hover:text-white
-                                        "
-
-                                    >
+                                    <Button type="button" compact onClick={()=>onEdit(photo)} className="rounded-lg px-3 py-2 text-xs text-text-soft hover:border-accent/40 hover:text-white">
 
                                         Modifier
 
-                                    </button>
+                                    </Button>
 
                                 )
 
@@ -319,31 +301,11 @@ export default function PhotoCard({
 
                                 onDelete && (
 
-                                    <button
-
-                                        type="button"
-
-                                        onClick={()=>onDelete(photo)}
-
-                                        className="
-                                            rounded-lg
-                                            border
-                                            border-red-400/20
-                                            bg-red-500/10
-                                            px-3
-                                            py-2
-                                            text-xs
-                                            text-red-400
-                                            transition-all
-                                            duration-300
-                                            hover:bg-red-500/20
-                                        "
-
-                                    >
+                                    <Button type="button" compact onClick={()=>onDelete(photo)} className="rounded-lg px-3 py-2 text-xs text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-400/20">
 
                                         Supprimer
 
-                                    </button>
+                                    </Button>
 
                                 )
 

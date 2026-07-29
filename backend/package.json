@@ -13,9 +13,11 @@
     "better-sqlite3": "^13.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "execa": "^10.0.0",
     "express": "^5.0.0",
     "jsonwebtoken": "^9.0.2",
-    "multer": "^2.2.0"
+    "multer": "^2.2.0",
+    "yaml": "^2.9.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

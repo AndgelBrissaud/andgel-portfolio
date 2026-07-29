@@ -1,3 +1,5 @@
+import Button from "../ui/Button";
+
 const settings = [
 
     {
@@ -52,6 +54,7 @@ export default function AdminSystem(){
             "
 
         >
+    import Button from "../ui/Button";
 
 
 
@@ -243,25 +246,9 @@ export default function AdminSystem(){
 
 
 
-                                    <button
-
-                                        type="button"
-
-                                        className="
-                                            mt-4
-                                            text-[10px]
-                                            uppercase
-                                            tracking-[0.3em]
-                                            text-accent
-                                            transition-colors
-                                            hover:text-accent-light
-                                        "
-
-                                    >
-
-                                        Ouvrir
-
-                                    </button>
+                                    <Button type="button" compact className="mt-4 text-[10px] uppercase tracking-[0.3em] text-accent">
+                                            Ouvrir
+                                        </Button>
 
 
 

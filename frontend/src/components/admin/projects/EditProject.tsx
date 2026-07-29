@@ -35,6 +35,8 @@ import CoverUploader from "./CoverUploader";
 
 import GalleryUploader from "./GalleryUploader";
 
+import Button from "../../ui/Button";
+
 
 
 
@@ -585,29 +587,9 @@ export default function EditProject({
 
 
 
-                <button
-
-                    type="button"
-
-                    onClick={onClose}
-
-                    className="
-                        rounded-xl
-                        border
-                        border-white/10
-                        px-4
-                        py-2
-                        text-sm
-                        text-white/60
-                        transition
-                        hover:text-white
-                    "
-
-                >
-
+                <Button type="button" compact onClick={onClose} className="rounded-xl border border-white/10 px-4 py-2 text-sm text-white/60">
                     Fermer
-
-                </button>
+                </Button>
 
 
 
@@ -833,63 +815,23 @@ export default function EditProject({
 
 
 
-                    <button
-
+                    <Button
                         type="button"
-
                         onClick={onClose}
-
-                        className="
-                            rounded-xl
-                            border
-                            border-white/10
-                            px-6
-                            py-3
-                            text-white/70
-                        "
-
+                        className="h-auto rounded-xl border border-white/10 px-6 py-3 text-white/70"
                     >
-
                         Annuler
-
-                    </button>
-
+                    </Button>
 
 
 
 
-                    <button
 
-                        type="submit"
+                    <Button type="submit" disabled={loading}>
 
-                        disabled={loading}
+                        {loading ? "Sauvegarde..." : "Enregistrer"}
 
-                        className="
-                            rounded-xl
-                            bg-accent
-                            px-8
-                            py-3
-                            font-medium
-                            text-black
-                            disabled:opacity-50
-                        "
-
-                    >
-
-                        {
-                            loading
-
-                            ?
-
-                            "Sauvegarde..."
-
-                            :
-
-                            "Enregistrer"
-
-                        }
-
-                    </button>
+                    </Button>
 
 
                 </footer>

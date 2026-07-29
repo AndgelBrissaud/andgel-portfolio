@@ -14,6 +14,8 @@ type ButtonProps = {
     className?: string;
     type?: "button" | "submit" | "reset";
     disabled?: boolean;
+    onClick?: React.MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>;
+    compact?: boolean;
 
 };
 
@@ -31,56 +33,54 @@ export default function Button({
 
     className="",
     type = "button",
-    disabled = false
+    disabled = false,
+    onClick,
+    compact = false
 
 }:ButtonProps){
 
 
 
-    const style = `
-
+    const style = compact ? `
         group
-
         relative
-
         inline-flex
-
         items-center
-
         justify-center
-
-        h-14
-
-        px-12
-
+        h-9
+        px-3
         overflow-hidden
-
         border
-
-        border-white/15
-
-        bg-[#0b0d10]
-
+        border-white/10
+        bg-transparent
         text-sm
-
-        uppercase
-
-        tracking-[0.3em]
-
-        text-white
-
+        tracking-normal
+        text-text
         transition-all
-
-        duration-500
-
-        hover:border-white/40
-
-        hover:-translate-y-1
-
-        shadow-[0_20px_60px_rgba(0,0,0,.5)]
-
+        duration-300
         ${className}
-
+    ` : `
+        group
+        relative
+        inline-flex
+        items-center
+        justify-center
+        h-14
+        px-12
+        overflow-hidden
+        border
+        border-white/15
+        bg-[#0b0d10]
+        text-sm
+        uppercase
+        tracking-[0.3em]
+        text-white
+        transition-all
+        duration-500
+        hover:border-white/40
+        hover:-translate-y-1
+        shadow-[0_20px_60px_rgba(0,0,0,.5)]
+        ${className}
     `;
 
 
@@ -189,15 +189,11 @@ export default function Button({
         return (
 
             <Link
-
                 to={to}
-
                 className={style}
-
+                onClick={onClick}
             >
-
                 {content}
-
             </Link>
 
         );
@@ -213,15 +209,11 @@ export default function Button({
         return (
 
             <a
-
                 href={href}
-
                 className={style}
-
+                onClick={onClick}
             >
-
                 {content}
-
             </a>
 
         );
@@ -233,7 +225,7 @@ export default function Button({
 
     return (
 
-        <button className={style} type={type} disabled={disabled}>
+        <button className={style} type={type} disabled={disabled} onClick={onClick}>
 
             {content}
 

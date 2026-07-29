@@ -1,9 +1,4 @@
-import {
-    useEffect,
-    useMemo,
-    useState
-} from "react";
-
+import { useEffect, useMemo, useState } from "react";
 
 import {
     getPhotoCategories,
@@ -11,757 +6,114 @@ import {
     createPhotoCategory
 } from "../../../services/photos.service";
 
-
-import type {
-    PhotoCategory
-} from "../../../types/photo";
-
+import type { PhotoCategory } from "../../../types/photo";
 
 import PremiumInput from "../../ui/PremiumInput";
-
-
-
-
-
-
-
-
+import Button from "../../ui/Button";
 
 export default function PhotoCategoriesManager(){
 
+    const [categories, setCategories] = useState<PhotoCategory[]>([]);
+    const [name, setName] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [creating, setCreating] = useState(false);
+    const [error, setError] = useState("");
 
+    const sortedCategories = useMemo(() => {
+        return [...categories].sort((a,b) => a.name.localeCompare(b.name));
+    }, [categories]);
 
-    const [
-        categories,
-        setCategories
-    ] = useState<PhotoCategory[]>([]);
-
-
-
-    const [
-        name,
-        setName
-    ] = useState("");
-
-
-
-    const [
-        loading,
-        setLoading
-    ] = useState(true);
-
-
-
-    const [
-        creating,
-        setCreating
-    ] = useState(false);
-
-
-
-    const [
-        error,
-        setError
-    ] = useState("");
-
-
-
-
-
-
-
-
-
-    const sortedCategories = useMemo(()=>{
-
-
-        return [...categories].sort(
-
-            (a,b)=>
-
-                a.name.localeCompare(
-                    b.name
-                )
-
-        );
-
-
-    },[categories]);
-
-
-
-
-
-
-
-
-
-    useEffect(()=>{
-
-
+    useEffect(() => {
         async function loadCategories(){
-
-
             try{
-
-
-                const data =
-                    await getPhotoCategories();
-
-
-
+                const data = await getPhotoCategories();
                 setCategories(data);
-
                 setError("");
-
-
-            }
-
-            catch(error){
-
-
-                setError(
-
-                    error instanceof Error
-
-                    ?
-
-                    error.message
-
-                    :
-
-                    "Erreur chargement catégories."
-
-                );
-
-
-            }
-
-            finally{
-
-
+            } catch(err){
+                setError(err instanceof Error ? err.message : "Erreur chargement catégories.");
+            } finally{
                 setLoading(false);
-
-
             }
-
-
         }
-
-
 
         loadCategories();
-
-
-    },[]);
-
-
-
-
-
-
-
-
+    }, []);
 
     async function handleCreate(){
-
-
-        const value =
-            name.trim();
-
-
-
+        const value = name.trim();
         if(!value){
-
-            setError(
-                "Veuillez saisir un nom de catégorie."
-            );
-
+            setError("Veuillez saisir un nom de catégorie.");
             return;
-
         }
 
-
-
-
-
         try{
-
-
             setCreating(true);
-
             setError("");
-
-
-
-            const category =
-                await createPhotoCategory(
-
-                    value
-
-                );
-
-
-
-
-
-            setCategories(
-
-                current =>
-
-                    [
-
-                        ...current,
-
-                        category
-
-                    ]
-
-            );
-
-
-
-
-
+            const category = await createPhotoCategory(value);
+            setCategories(current => [...current, category]);
             setName("");
-
-
-
-        }
-
-        catch(error){
-
-
-            setError(
-
-                error instanceof Error
-
-                ?
-
-                error.message
-
-                :
-
-                "Erreur création catégorie."
-
-            );
-
-
-        }
-
-        finally{
-
-
+        } catch(err){
+            setError(err instanceof Error ? err.message : "Erreur création catégorie.");
+        } finally{
             setCreating(false);
-
-
         }
-
-
     }
 
-
-
-
-
-
-
-
-
-    async function handleDelete(
-
-        category:PhotoCategory
-
-    ){
-
-
-
-        const confirmDelete =
-
-            window.confirm(
-
-                `Supprimer "${category.name}" ?`
-
-            );
-
-
-
-
-
-        if(!confirmDelete){
-
-            return;
-
-        }
-
-
-
-
+    async function handleDelete(category: PhotoCategory){
+        const confirmDelete = window.confirm(`Supprimer "${category.name}" ?`);
+        if(!confirmDelete) return;
 
         try{
-
-
-            await deletePhotoCategory(
-
-                category.id
-
-            );
-
-
-
-
-
-            setCategories(
-
-                current =>
-
-                    current.filter(
-
-                        item =>
-
-                            item.id !== category.id
-
-                    )
-
-            );
-
-
-
+            await deletePhotoCategory(category.id);
+            setCategories(current => current.filter(item => item.id !== category.id));
+        } catch(err){
+            setError(err instanceof Error ? err.message : "Erreur suppression catégorie.");
         }
-
-        catch(error){
-
-
-            setError(
-
-                error instanceof Error
-
-                ?
-
-                error.message
-
-                :
-
-                "Erreur suppression catégorie."
-
-            );
-
-
-        }
-
-
     }
-
-
-
-
-
-
-
-
 
     if(loading){
-
-
         return (
-
-            <section
-
-                className="
-                    rounded-2xl
-                    border
-                    border-white/10
-                    bg-surface
-                    p-5
-                    text-center
-                    text-sm
-                    text-text-muted
-                "
-
-            >
-
+            <section className="rounded-2xl border border-white/10 bg-surface p-5 text-center text-sm text-text-muted">
                 Chargement des catégories...
-
             </section>
-
         );
-
-
     }
 
-
-
-
-
-
-
-
-
     return (
+        <section className="space-y-6 rounded-2xl border border-white/10 bg-surface p-4 shadow-shadow-soft sm:p-5">
 
-        <section
-
-            className="
-                space-y-6
-                rounded-2xl
-                border
-                border-white/10
-                bg-surface
-                p-4
-                shadow-shadow-soft
-                sm:p-5
-            "
-
-        >
-
-
-
-
-
-
-
-
-
-            <header
-
-                className="
-                    space-y-2
-                "
-
-            >
-
-                <p
-
-                    className="
-                        text-[10px]
-                        uppercase
-                        tracking-[0.35em]
-                        text-accent
-                    "
-
-                >
-
-                    Organisation
-
-                </p>
-
-
-
-
-
-                <h2
-
-                    className="
-                        font-title
-                        text-2xl
-                    "
-
-                >
-
-                    Catégories photos
-
-                </h2>
-
-
-
-
-
-                <p
-
-                    className="
-                        text-xs
-                        text-text-muted
-                    "
-
-                >
-
-                    Créez et organisez vos thèmes photographiques.
-
-                </p>
-
-
+            <header className="space-y-2">
+                <p className="text-[10px] uppercase tracking-[0.35em] text-accent">Organisation</p>
+                <h2 className="font-title text-2xl">Catégories photos</h2>
+                <p className="text-xs text-text-muted">Créez et organisez vos thèmes photographiques.</p>
             </header>
 
-
-
-
-
-
-
-
-
-            {/* CREATION */}
-
-            <div
-
-                className="
-                    rounded-xl
-                    border
-                    border-white/10
-                    bg-black/20
-                    p-4
-                "
-
-            >
-
-                <div
-
-                    className="
-                        grid
-                        gap-3
-                        sm:grid-cols-[1fr_auto]
-                        sm:items-end
-                    "
-
-                >
-
-
-
-                    <PremiumInput
-
-                        label="Nouvelle catégorie"
-
-                        value={name}
-
-                        onChange={setName}
-
-                        placeholder="Ex : Architecture, Portrait..."
-
-                    />
-
-
-
-
-
-                    <button
-
-                        type="button"
-
-                        onClick={handleCreate}
-
-                        disabled={creating}
-
-                        className="
-                            h-10
-                            rounded-lg
-                            bg-accent
-                            px-5
-                            text-xs
-                            font-medium
-                            text-black
-                            transition
-                            hover:opacity-90
-                            disabled:opacity-50
-                        "
-
-                    >
-
-                        {
-
-                            creating
-
-                            ?
-
-                            "Ajout..."
-
-                            :
-
-                            "Ajouter"
-
-                        }
-
-
-                    </button>
-
-
-
+            <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+                <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+                    <PremiumInput label="Nouvelle catégorie" value={name} onChange={setName} placeholder="Ex : Architecture, Portrait..." />
+                    <Button type="button" compact onClick={handleCreate} disabled={creating} className="h-10 bg-accent px-5 text-xs font-medium text-black">
+                        {creating ? "Ajout..." : "Ajouter"}
+                    </Button>
                 </div>
-
-
             </div>
 
-
-
-
-
-
-
-
-
-            {
-
-                error && (
-
-                    <div
-
-                        className="
-                            rounded-lg
-                            border
-                            border-red-400/20
-                            bg-red-500/10
-                            px-3
-                            py-2
-                            text-xs
-                            text-red-400
-                        "
-
-                    >
-
-                        {error}
-
-                    </div>
-
-                )
-
-            }
-
-
-
-
-
-
-
-
-
-            {
-
-                sortedCategories.length === 0
-
-                ?
-
-                (
-
-                    <div
-
-                        className="
-                            rounded-xl
-                            border
-                            border-white/10
-                            bg-black/20
-                            p-6
-                            text-center
-                            text-sm
-                            text-text-muted
-                        "
-
-                    >
-
-                        Aucune catégorie.
-
-                    </div>
-
-                )
-
-                :
-
-                (
-
-                    <div
-
-                        className="
-                            grid
-                            gap-3
-                            sm:grid-cols-2
-                            lg:grid-cols-3
-                        "
-
-                    >
-
-                        {
-
-                            sortedCategories.map(
-
-                                category => (
-
-
-                                    <article
-
-                                        key={category.id}
-
-                                        className="
-                                            group
-                                            flex
-                                            items-center
-                                            justify-between
-                                            gap-3
-                                            rounded-xl
-                                            border
-                                            border-white/10
-                                            bg-black/20
-                                            px-4
-                                            py-3
-                                            transition
-                                            hover:border-accent/40
-                                        "
-
-                                    >
-
-
-
-                                        <span
-
-                                            className="
-                                                truncate
-                                                text-sm
-                                                text-white
-                                            "
-
-                                        >
-
-                                            {category.name}
-
-                                        </span>
-
-
-
-
-
-                                        <button
-
-                                            type="button"
-
-                                            onClick={()=>handleDelete(category)}
-
-                                            className="
-                                                shrink-0
-                                                text-[10px]
-                                                uppercase
-                                                tracking-wide
-                                                text-red-400
-                                                transition
-                                                hover:text-red-300
-                                            "
-
-                                        >
-
-                                            Supprimer
-
-                                        </button>
-
-
-
-                                    </article>
-
-
-                                )
-
-                            )
-
-                        }
-
-
-                    </div>
-
-                )
-
-            }
-
-
-
-
+            {error && (
+                <div className="rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-xs text-red-400">{error}</div>
+            )}
+
+            {sortedCategories.length === 0 ? (
+                <div className="rounded-xl border border-white/10 bg-black/20 p-6 text-center text-sm text-text-muted">Aucune catégorie.</div>
+            ) : (
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {sortedCategories.map(category => (
+                        <article key={category.id} className="group flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/20 px-4 py-3 transition hover:border-accent/40">
+                            <span className="truncate text-sm text-white">{category.name}</span>
+                            <Button type="button" compact onClick={() => handleDelete(category)} className="shrink-0 text-[10px] uppercase tracking-wide text-red-400 hover:text-red-300">Supprimer</Button>
+                        </article>
+                    ))}
+                </div>
+            )}
 
         </section>
-
     );
-
 }

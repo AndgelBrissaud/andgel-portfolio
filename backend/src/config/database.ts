@@ -1,83 +1,44 @@
 import Database from "better-sqlite3";
-
 import path from "path";
-
 import fs from "fs";
 
-
-
 const dataDir = path.join(
-
     process.cwd(),
-
     "data"
-
 );
-
-
 
 if(!fs.existsSync(dataDir)){
 
     fs.mkdirSync(
-
         dataDir,
-
         {
-
             recursive:true
-
         }
-
     );
 
 }
 
-
-
 const dbPath = path.join(
-
     dataDir,
-
     "database.sqlite"
-
 );
-
-
 
 const db = new Database(
-
     dbPath
-
 );
 
 
-
 db.pragma(
-
     "journal_mode = WAL"
-
 );
 
-
 db.pragma(
-
     "foreign_keys = ON"
-
 );
-
 
 db.pragma(
-
     "synchronous = NORMAL"
-
 );
-
-
-
-
-
-
-
 
 
 /*
@@ -85,7 +46,6 @@ db.pragma(
 | ADMIN
 |--------------------------------------------------------------------------
 */
-
 
 db.prepare(`
 
@@ -103,18 +63,11 @@ CREATE TABLE IF NOT EXISTS admins (
 
 
 
-
-
-
-
-
-
 /*
 |--------------------------------------------------------------------------
 | SESSIONS
 |--------------------------------------------------------------------------
 */
-
 
 db.prepare(`
 
@@ -134,18 +87,11 @@ CREATE TABLE IF NOT EXISTS sessions (
 
 
 
-
-
-
-
-
-
 /*
 |--------------------------------------------------------------------------
-| PROJETS
+| PROJETS PORTFOLIO
 |--------------------------------------------------------------------------
 */
-
 
 db.prepare(`
 
@@ -183,9 +129,41 @@ CREATE TABLE IF NOT EXISTS projects (
 
 
 
+/*
+|--------------------------------------------------------------------------
+| SERVER MANAGEMENT PROJECTS
+|--------------------------------------------------------------------------
+*/
 
+db.prepare(`
 
+CREATE TABLE IF NOT EXISTS server_projects (
 
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    name TEXT NOT NULL UNIQUE,
+
+    path TEXT NOT NULL UNIQUE,
+
+    compose_file TEXT DEFAULT 'docker-compose.yml',
+
+    frontend_container TEXT,
+
+    backend_container TEXT,
+
+    repository TEXT,
+
+    branch TEXT DEFAULT 'main',
+
+    enabled INTEGER DEFAULT 1,
+
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+
+)
+
+`).run();
 
 
 
@@ -194,7 +172,6 @@ CREATE TABLE IF NOT EXISTS projects (
 | CATÉGORIES PHOTOS
 |--------------------------------------------------------------------------
 */
-
 
 db.prepare(`
 
@@ -212,18 +189,11 @@ CREATE TABLE IF NOT EXISTS photo_categories (
 
 
 
-
-
-
-
-
-
 /*
 |--------------------------------------------------------------------------
 | PHOTOS
 |--------------------------------------------------------------------------
 */
-
 
 db.prepare(`
 
@@ -239,9 +209,15 @@ CREATE TABLE IF NOT EXISTS photos (
 
     description TEXT,
 
+    category_id INTEGER,
+
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY(category_id)
+
+    REFERENCES photo_categories(id)
 
 )
 
@@ -249,25 +225,16 @@ CREATE TABLE IF NOT EXISTS photos (
 
 
 
-
-
-
-
-
-
 /*
 |--------------------------------------------------------------------------
-| MIGRATION PHOTOS -> CATEGORY_ID
+| MIGRATION PHOTOS CATEGORY_ID
 |--------------------------------------------------------------------------
 */
-
 
 const photoColumns = db
 
     .prepare(
-
         "PRAGMA table_info(photos)"
-
     )
 
     .all() as {
@@ -275,9 +242,6 @@ const photoColumns = db
         name:string
 
     }[];
-
-
-
 
 
 const hasCategoryId = photoColumns.some(
@@ -288,10 +252,7 @@ const hasCategoryId = photoColumns.some(
 
 
 
-
-
 if(!hasCategoryId){
-
 
     db.prepare(`
 
@@ -301,23 +262,15 @@ if(!hasCategoryId){
 
     `).run();
 
-
 }
-
-
-
-
-
-
 
 
 
 /*
 |--------------------------------------------------------------------------
-| MIGRATION CATÉGORIES EXISTANTES
+| MIGRATION ANCIENNES CATEGORIES
 |--------------------------------------------------------------------------
 */
-
 
 const oldCategories = db.prepare(`
 
@@ -339,12 +292,6 @@ AND category_id IS NULL
 
 
 
-
-
-
-
-
-
 const insertCategory = db.prepare(`
 
 INSERT OR IGNORE INTO photo_categories(name)
@@ -352,9 +299,6 @@ INSERT OR IGNORE INTO photo_categories(name)
 VALUES(?)
 
 `);
-
-
-
 
 
 const getCategory = db.prepare(`
@@ -366,9 +310,6 @@ FROM photo_categories
 WHERE name = ?
 
 `);
-
-
-
 
 
 const updatePhotoCategory = db.prepare(`
@@ -383,27 +324,15 @@ WHERE category = ?
 
 
 
-
-
-
-
-
-
 for(const item of oldCategories){
 
-
     insertCategory.run(
-
         item.category
-
     );
 
 
-
     const category = getCategory.get(
-
         item.category
-
     ) as {
 
         id:number
@@ -411,9 +340,7 @@ for(const item of oldCategories){
     };
 
 
-
     if(category){
-
 
         updatePhotoCategory.run(
 
@@ -423,36 +350,8 @@ for(const item of oldCategories){
 
         );
 
-
     }
 
 }
-
-
-
-
-
-
-
-
-
-/*
-|--------------------------------------------------------------------------
-| MESSAGES CONTACT
-|--------------------------------------------------------------------------
-*/
-
-
-/*
-| Table volontairement absente.
-*/
-
-
-
-
-
-
-
-
 
 export default db;

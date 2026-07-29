@@ -4,6 +4,7 @@ import {
 
 
 import PremiumField from "../../ui/PremiumField";
+import Button from "../../ui/Button";
 
 
 
@@ -238,32 +239,9 @@ export default function TechnologyInput({
 
 
 
-                                <button
-
-                                    type="button"
-
-                                    onClick={()=>
-
-
-                                        removeTechnology(
-
-                                            technology
-
-                                        )
-
-                                    }
-
-                                    className="
-                                        text-text-soft
-                                        transition-colors
-                                        hover:text-accent
-                                    "
-
-                                >
-
+                                <Button type="button" compact onClick={()=> removeTechnology(technology) } className="text-text-soft hover:text-accent">
                                     ×
-
-                                </button>
+                                </Button>
 
 
                             </span>
@@ -327,25 +305,9 @@ export default function TechnologyInput({
 
 
 
-            <button
-
-                type="button"
-
-                onClick={addTechnology}
-
-                className="
-                    mt-3
-                    text-sm
-                    text-accent
-                    transition-colors
-                    hover:text-accent-light
-                "
-
-            >
-
+            <Button type="button" compact onClick={addTechnology} className="mt-3 text-sm text-accent">
                 + Ajouter
-
-            </button>
+            </Button>
 
 
 

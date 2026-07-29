@@ -17,6 +17,7 @@ import {
     type Project
 
 } from "../../../services/api";
+import Button from "../../ui/Button";
 
 interface Props{
 
@@ -156,45 +157,13 @@ export default function ProjectCard({
 
                         >
 
-                            <button
-
-                                onClick={()=>onEdit(project)}
-
-                                className="
-                                    rounded-full
-                                    border
-                                    border-white/10
-                                    p-3
-                                    transition
-                                    hover:border-accent
-                                    hover:text-accent
-                                "
-
-                            >
-
+                            <Button type="button" compact onClick={()=>onEdit(project)} className="rounded-full p-3 border border-white/10 hover:border-accent hover:text-accent">
                                 <Pencil size={18}/>
+                            </Button>
 
-                            </button>
-
-                            <button
-
-                                onClick={()=>onDelete(project)}
-
-                                className="
-                                    rounded-full
-                                    border
-                                    border-white/10
-                                    p-3
-                                    transition
-                                    hover:border-red-500
-                                    hover:text-red-400
-                                "
-
-                            >
-
+                            <Button type="button" compact onClick={()=>onDelete(project)} className="rounded-full p-3 border border-white/10 hover:border-red-500 hover:text-red-400">
                                 <Trash2 size={18}/>
-
-                            </button>
+                            </Button>
 
                         </div>
 

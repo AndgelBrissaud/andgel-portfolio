@@ -169,6 +169,35 @@ export default function PhotoGallery({
     }
 
 
+    if(!loading && filteredPhotos.length === 0){
+
+        return (
+
+            <div className="text-center text-text-muted">
+
+                {categoryId ? (
+
+                    <>
+                        <h3 className="text-lg font-medium mb-2">Aucune photo dans cette catégorie</h3>
+                        <p>Cette catégorie ne contient pas encore de photographie.</p>
+                    </>
+
+                ) : (
+
+                    <>
+                        <h3 className="text-lg font-medium mb-2">Aucune photographie disponible</h3>
+                        <p>Les photographies sont en cours d'ajout. Revenez bientôt.</p>
+                    </>
+
+                )}
+
+            </div>
+
+        );
+
+    }
+
+
 
 
 

@@ -2,955 +2,456 @@
    CONFIG
 ========================================================================== */
 
-
 export const API_BASE_URL =
-
-    import.meta.env.VITE_API_URL ?? "http://localhost:4000";
-
-
-
-
+  import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 
 /* ==========================================================================
    IMAGE URL
 ========================================================================== */
 
+export function getImageUrl(image?: string): string {
+  if (!image) {
+    return "";
+  }
 
-export function getImageUrl(
+  if (image.startsWith("http")) {
+    return image;
+  }
 
-    image?:string
-
-):string {
-
-
-    if(!image){
-
-        return "";
-
-    }
-
-
-
-    if(image.startsWith("http")){
-
-        return image;
-
-    }
-
-
-
-    return `${API_BASE_URL}${
-        image.startsWith("/")
-            ? image
-            : `/${image}`
-    }`;
-
+  return `${API_BASE_URL}${image.startsWith("/") ? image : `/${image}`}`;
 }
-
-
-
-
-
-
-
-
 
 /* ==========================================================================
    TYPES
 ========================================================================== */
 
-
 export interface ProjectColor {
+  name: string;
 
-    name:string;
-
-    value:string;
-
+  value: string;
 }
-
-
-
-
 
 export interface ProjectDesign {
+  style?: string;
 
-    style?:string;
+  experience?: string;
 
-    experience?:string;
+  typography?: string[];
 
-    typography?:string[];
-
-    colors?:ProjectColor[];
-
+  colors?: ProjectColor[];
 }
-
-
-
-
 
 export interface Project {
+  id: number;
 
+  slug: string;
 
-    id:number;
+  title: string;
 
+  category?: string;
 
-    slug:string;
+  description: string;
 
+  image: string;
 
-    title:string;
+  gallery: string[];
 
+  year?: string;
 
-    category?:string;
+  design?: ProjectDesign;
 
+  technical: string[];
 
-    description:string;
+  createdAt?: string;
 
-
-    image:string;
-
-
-    gallery:string[];
-
-
-    year?:string;
-
-
-    design?:ProjectDesign;
-
-
-    technical:string[];
-
-
-    createdAt?:string;
-
-
-    updatedAt?:string;
-
+  updatedAt?: string;
 }
 
-
-
-
-
-
-
-
-
-export type PhotoCategory =
-
-    | "portrait"
-
-    | "phone"
-
-    | "phlore"
-
-    | "other";
-
-
-
-
-
-
-
-
+export type PhotoCategory = "portrait" | "phone" | "phlore" | "other";
 
 export interface PhotoMetadata {
+  camera?: string;
 
+  lens?: string;
 
-    camera?:string;
+  settings?: {
+    aperture?: string;
 
+    shutterSpeed?: string;
 
-    lens?:string;
+    iso?: number;
 
-
-    settings?:{
-
-
-        aperture?:string;
-
-
-        shutterSpeed?:string;
-
-
-        iso?:number;
-
-
-        focalLength?:string;
-
-
-    };
-
+    focalLength?: string;
+  };
 }
-
-
-
-
-
-
-
-
 
 export interface Photo {
+  id: number | string;
 
+  title: string;
 
-    id:number|string;
+  category?: PhotoCategory;
 
+  description?: string;
 
-    title:string;
+  image: string;
 
+  thumbnail?: string;
 
-    category?:PhotoCategory;
+  date?: string;
 
+  location?: string;
 
-    description?:string;
+  instagramUrl?: string;
 
+  metadata?: PhotoMetadata;
 
-    image:string;
+  createdAt?: string;
 
-
-    thumbnail?:string;
-
-
-    date?:string;
-
-
-    location?:string;
-
-
-    instagramUrl?:string;
-
-
-    metadata?:PhotoMetadata;
-
-
-    createdAt?:string;
-
-
-    updatedAt?:string;
-
+  updatedAt?: string;
 }
-
-
-
-
-
-
-
-
 
 export interface PhotoCategoryItem {
+  id: number;
 
+  name: string;
 
-    id:number;
-
-
-    name:string;
-
-
-    createdAt?:string;
-
+  createdAt?: string;
 }
-
-
-
-
-
-
-
-
 
 export interface AdminStats {
+  projects: number;
 
+  photos: number;
 
-    projects:number;
-
-
-    photos:number;
-
-
-    status:string;
-
+  status: string;
 }
-
-
-
-
-
-
-
-
 
 export interface LoginResponse {
-
-
-    token:string;
-
+  token: string;
 }
-
-
-
-
-
-
-
-
 
 /* ==========================================================================
    TOKEN
 ========================================================================== */
 
-
-function getToken():string|null {
-
-
-    return localStorage.getItem(
-
-        "admin_token"
-
-    );
-
+function getToken(): string | null {
+  return localStorage.getItem("admin_token");
 }
 
-
-
-
-
-
-
-
-
-export function isAuthenticated():boolean {
-
-
-    return Boolean(
-
-        getToken()
-
-    );
-
+export function isAuthenticated(): boolean {
+  return Boolean(getToken());
 }
-
-
-
-
-
-
-
-
 
 /* ==========================================================================
    FETCH GLOBAL
 ========================================================================== */
 
-
 export async function apiFetch<T>(
+  endpoint: string,
 
-    endpoint:string,
+  options: RequestInit = {},
+): Promise<T> {
+  const token = getToken();
 
-    options:RequestInit = {}
+  const headers: Record<string, string> = {
+    ...((options.headers as Record<string, string>) ?? {}),
+  };
 
-):Promise<T>{
+  const isFormData = options.body instanceof FormData;
 
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
 
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
 
-    const token = getToken();
+  const response = await fetch(
+    `${API_BASE_URL}${endpoint}`,
 
+    {
+      ...options,
 
+      headers,
+    },
+  );
 
+  if (!response.ok) {
+    let message = "Erreur serveur";
 
+    try {
+      const error = await response.json();
 
-    const headers:Record<string,string> = {
-
-
-        ...(options.headers as Record<string,string> ?? {})
-
-    };
-
-
-
-
-
-    const isFormData =
-
-        options.body instanceof FormData;
-
-
-
-
-
-    if(!isFormData){
-
-        headers["Content-Type"] =
-
-            "application/json";
-
+      message = error.message || message;
+    } catch {
+      //
     }
 
+    throw new Error(message);
+  }
 
+  if (response.status === 204) {
+    return {} as T;
+  }
 
-
-
-    if(token){
-
-        headers.Authorization =
-
-            `Bearer ${token}`;
-
-    }
-
-
-
-
-
-
-
-
-
-    const response = await fetch(
-
-        `${API_BASE_URL}${endpoint}`,
-
-        {
-
-            ...options,
-
-            headers
-
-        }
-
-    );
-
-
-
-
-
-
-
-
-
-    if(!response.ok){
-
-
-        let message =
-
-            "Erreur serveur";
-
-
-
-
-
-        try{
-
-
-            const error =
-
-                await response.json();
-
-
-
-            message =
-
-                error.message ||
-
-                message;
-
-
-        }
-
-        catch{
-
-            //
-
-        }
-
-
-
-        throw new Error(message);
-
-    }
-
-
-
-
-
-
-
-
-
-    if(response.status === 204){
-
-        return {} as T;
-
-    }
-
-
-
-
-
-
-
-
-
-    return response.json();
-
+  return response.json();
 }
-
-
-
-
-
-
-
-
 
 /* ==========================================================================
    AUTH
 ========================================================================== */
 
+export async function login(password: string): Promise<LoginResponse> {
+  const result = await apiFetch<LoginResponse>(
+    "/auth/login",
 
-export async function login(
+    {
+      method: "POST",
 
-    password:string
+      body: JSON.stringify({
+        password,
+      }),
+    },
+  );
 
-):Promise<LoginResponse>{
+  localStorage.setItem(
+    "admin_token",
 
+    result.token,
+  );
 
-
-    const result = await apiFetch<LoginResponse>(
-
-        "/auth/login",
-
-        {
-
-            method:"POST",
-
-            body:JSON.stringify({
-
-                password
-
-            })
-
-        }
-
-    );
-
-
-
-
-
-    localStorage.setItem(
-
-        "admin_token",
-
-        result.token
-
-    );
-
-
-
-
-
-    return result;
-
+  return result;
 }
 
-
-
-
-
-
-
-
-
-export function logout(){
-
-
-    localStorage.removeItem(
-
-        "admin_token"
-
-    );
-
+export function logout() {
+  localStorage.removeItem("admin_token");
 }
-
-
-
-
-
-
-
-
 
 /* ==========================================================================
    ADMIN
 ========================================================================== */
 
-
-export function getAdminStats(){
-
-
-    return apiFetch<AdminStats>(
-
-        "/admin/stats"
-
-    );
-
+export function getAdminStats() {
+  return apiFetch<AdminStats>("/admin/stats");
 }
-
-
-
-
-
-
-
-
 
 /* ==========================================================================
    PROJECTS
 ========================================================================== */
 
-
-export function getProjects(){
-
-
-    return apiFetch<Project[]>(
-
-        "/projects"
-
-    );
-
+export function getProjects() {
+  return apiFetch<Project[]>("/projects");
 }
 
-
-
-
-
-export function refreshProjects(){
-
-
-    return getProjects();
-
+export function refreshProjects() {
+  return getProjects();
 }
 
-
-
-
-
-export function getProjectBySlug(
-
-    slug:string
-
-){
-
-
-    return apiFetch<Project>(
-
-        `/projects/${slug}`
-
-    );
-
+export function getProjectBySlug(slug: string) {
+  return apiFetch<Project>(`/projects/${slug}`);
 }
 
-
-
-
-
-export function getProject(
-
-    slug:string
-
-){
-
-
-    return getProjectBySlug(
-
-        slug
-
-    );
-
+export function getProject(slug: string) {
+  return getProjectBySlug(slug);
 }
 
+export function createProject(data: FormData) {
+  return apiFetch<Project>(
+    "/projects",
 
+    {
+      method: "POST",
 
-
-
-export function createProject(
-
-    data:FormData
-
-){
-
-
-    return apiFetch<Project>(
-
-        "/projects",
-
-        {
-
-            method:"POST",
-
-            body:data
-
-        }
-
-    );
-
+      body: data,
+    },
+  );
 }
-
-
-
-
 
 export function updateProject(
+  id: number,
 
-    id:number,
+  data: FormData,
+) {
+  return apiFetch<Project>(
+    `/projects/${id}`,
 
-    data:FormData
+    {
+      method: "PUT",
 
-){
-
-
-    return apiFetch<Project>(
-
-        `/projects/${id}`,
-
-        {
-
-            method:"PUT",
-
-            body:data
-
-        }
-
-    );
-
+      body: data,
+    },
+  );
 }
 
+export function deleteProject(id: number) {
+  return apiFetch<void>(
+    `/projects/${id}`,
 
-
-
-
-export function deleteProject(
-
-    id:number
-
-){
-
-
-    return apiFetch<void>(
-
-        `/projects/${id}`,
-
-        {
-
-            method:"DELETE"
-
-        }
-
-    );
-
+    {
+      method: "DELETE",
+    },
+  );
 }
-
-
-
-
-
-
-
-
 
 /* ==========================================================================
    PHOTOS
 ========================================================================== */
 
-
-export function getPhotos(){
-
-
-    return apiFetch<Photo[]>(
-
-        "/photos"
-
-    );
-
+export function getPhotos() {
+  return apiFetch<Photo[]>("/photos");
 }
 
-
-
-
-
-export function getPhotoById(
-
-    id:number
-
-){
-
-
-    return apiFetch<Photo>(
-
-        `/photos/${id}`
-
-    );
-
+export function getPhotoById(id: number) {
+  return apiFetch<Photo>(`/photos/${id}`);
 }
 
+export function createPhoto(data: FormData) {
+  return apiFetch<Photo>(
+    "/photos",
 
+    {
+      method: "POST",
 
-
-
-export function createPhoto(
-
-    data:FormData
-
-){
-
-
-    return apiFetch<Photo>(
-
-        "/photos",
-
-        {
-
-            method:"POST",
-
-            body:data
-
-        }
-
-    );
-
+      body: data,
+    },
+  );
 }
-
-
-
-
 
 export function updatePhoto(
+  id: number,
 
-    id:number,
+  data: FormData,
+) {
+  return apiFetch<Photo>(
+    `/photos/${id}`,
 
-    data:FormData
+    {
+      method: "PUT",
 
-){
-
-
-    return apiFetch<Photo>(
-
-        `/photos/${id}`,
-
-        {
-
-            method:"PUT",
-
-            body:data
-
-        }
-
-    );
-
+      body: data,
+    },
+  );
 }
 
+export function deletePhoto(id: number) {
+  return apiFetch<void>(
+    `/photos/${id}`,
 
-
-
-
-export function deletePhoto(
-
-    id:number
-
-){
-
-
-    return apiFetch<void>(
-
-        `/photos/${id}`,
-
-        {
-
-            method:"DELETE"
-
-        }
-
-    );
-
+    {
+      method: "DELETE",
+    },
+  );
 }
-
-
-
-
-
-
-
-
 
 /* ==========================================================================
    PHOTO CATEGORIES
 ========================================================================== */
 
-
-export function getPhotoCategories(){
-
-
-    return apiFetch<PhotoCategoryItem[]>(
-
-        "/photo-categories"
-
-    );
-
+export function getPhotoCategories() {
+  return apiFetch<PhotoCategoryItem[]>("/photo-categories");
 }
 
+export function createPhotoCategory(name: string) {
+  return apiFetch<PhotoCategoryItem>(
+    "/photo-categories",
 
+    {
+      method: "POST",
 
-
-
-export function createPhotoCategory(
-
-    name:string
-
-){
-
-
-    return apiFetch<PhotoCategoryItem>(
-
-        "/photo-categories",
-
-        {
-
-            method:"POST",
-
-            body:JSON.stringify({
-
-                name
-
-            })
-
-        }
-
-    );
-
+      body: JSON.stringify({
+        name,
+      }),
+    },
+  );
 }
 
+export function deletePhotoCategory(id: number) {
+  return apiFetch<void>(
+    `/photo-categories/${id}`,
 
-
-
-
-export function deletePhotoCategory(
-
-    id:number
-
-){
-
-
-    return apiFetch<void>(
-
-        `/photo-categories/${id}`,
-
-        {
-
-            method:"DELETE"
-
-        }
-
-    );
-
+    {
+      method: "DELETE",
+    },
+  );
 }
+
+// simple axios-like wrapper used by admin UI services
+type ApiConfig = {
+  responseType?: "text" | "json";
+};
+
+async function fetchText(endpoint: string) {
+  const token = getToken();
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, { headers });
+
+  if (!response.ok) {
+    let message = "Erreur serveur";
+    try {
+      const error = await response.json();
+      message = error.message || message;
+    } catch {
+      // ignore
+    }
+    throw new Error(message);
+  }
+
+  return response.text();
+}
+function isFormData(x: unknown): x is FormData {
+  return x instanceof FormData;
+}
+
+const api = {
+  async get<T = unknown>(
+    endpoint: string,
+    config?: ApiConfig,
+  ): Promise<{ data: T }> {
+    if (config?.responseType === "text") {
+      const data = await fetchText(endpoint);
+      return { data: data as unknown as T };
+    }
+
+    const data = await apiFetch<T>(endpoint, { method: "GET" });
+    return { data };
+  },
+
+  async post<T = unknown, B = unknown>(
+    endpoint: string,
+    body?: B,
+  ): Promise<{ data: T }> {
+    const options: RequestInit = { method: "POST" };
+    if (body !== undefined) {
+      options.body = isFormData(body) ? body : JSON.stringify(body as unknown);
+    }
+
+    const data = await apiFetch<T>(endpoint, options);
+    return { data };
+  },
+
+  async put<T = unknown, B = unknown>(
+    endpoint: string,
+    body?: B,
+  ): Promise<{ data: T }> {
+    const options: RequestInit = { method: "PUT" };
+    if (body !== undefined) {
+      options.body = isFormData(body) ? body : JSON.stringify(body as unknown);
+    }
+
+    const data = await apiFetch<T>(endpoint, options);
+    return { data };
+  },
+
+  async delete<T = unknown>(endpoint: string): Promise<{ data: T }> {
+    const data = await apiFetch<T>(endpoint, { method: "DELETE" });
+    return { data };
+  },
+};
+
+export default api;

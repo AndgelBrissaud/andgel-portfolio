@@ -4,6 +4,7 @@ import {
 
 
 import PremiumField from "../../ui/PremiumField";
+import Button from "../../ui/Button";
 
 
 
@@ -475,33 +476,9 @@ export default function ColorEditor({
 
 
 
-                <button
-
-                    type="button"
-
-                    onClick={addColor}
-
-                    disabled={
-
-                        !name.trim() ||
-
-                        !preview
-
-                    }
-
-                    className="
-                        text-xs
-                        text-accent
-                        transition-colors
-                        hover:text-accent-light
-                        disabled:opacity-30
-                    "
-
-                >
-
+                <Button type="button" compact onClick={addColor} disabled={!name.trim() || !preview} className="text-xs text-accent">
                     + Ajouter
-
-                </button>
+                </Button>
 
 
 
@@ -626,29 +603,9 @@ export default function ColorEditor({
 
 
 
-                                            <button
-
-                                                type="button"
-
-                                                onClick={()=>
-
-
-                                                    removeColor(index)
-
-
-                                                }
-
-                                                className="
-                                                    text-text-muted
-                                                    hover:text-accent
-                                                    transition-colors
-                                                "
-
-                                            >
-
+                                            <Button type="button" compact onClick={()=>removeColor(index)} className="text-text-muted hover:text-accent">
                                                 ×
-
-                                            </button>
+                                            </Button>
 
 
 

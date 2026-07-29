@@ -78,15 +78,10 @@ export default function LoginForm(){
                         }}
                         placeholder="Votre mot de passe"
                         required
-                        end={(
-                            <button
-                                type="button"
-                                onClick={()=>setShowPassword(s=>!s)}
-                                className="inline-flex items-center justify-center h-9 px-3 rounded-radius-md border border-white/10 bg-background text-sm text-text-muted"
-                                aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
-                            >
+                            end={(
+                            <Button type="button" compact onClick={()=>setShowPassword(s=>!s)} className="inline-flex items-center justify-center h-9 px-3 rounded-radius-md border border-white/10 bg-background text-sm text-text-muted" aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}>
                                 {showPassword ? "Masquer" : "Afficher"}
-                            </button>
+                            </Button>
                         )}
                     />
 

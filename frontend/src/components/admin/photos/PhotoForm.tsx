@@ -26,6 +26,8 @@ import PremiumField from "../../ui/PremiumField";
 
 import PremiumSelect from "../../ui/PremiumSelect";
 
+import Button from "../../ui/Button";
+
 
 import usePhotoCategories from "../../../hooks/usePhotoCategories";
 
@@ -855,46 +857,11 @@ export default function PhotoForm({
 
 
 
-                <button
+                <Button type="submit" disabled={loading} className="w-full">
 
-                    type="submit"
+                    {loading ? "Création..." : "Créer la photographie"}
 
-                    disabled={loading}
-
-                    className="
-                        w-full
-                        rounded-radius-full
-                        bg-accent
-                        px-8
-                        py-4
-                        text-background
-                        font-medium
-                        transition-all
-                        duration-duration-base
-                        hover:bg-accent-light
-                        hover:-translate-y-1
-                        disabled:opacity-50
-                    "
-
-                >
-
-
-                    {
-
-                        loading
-
-                        ?
-
-                        "Création..."
-
-                        :
-
-                        "Créer la photographie"
-
-                    }
-
-
-                </button>
+                </Button>
 
 
 

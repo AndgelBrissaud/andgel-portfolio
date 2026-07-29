@@ -34,6 +34,8 @@ import PremiumSelect from "../../ui/PremiumSelect";
 
 import PremiumField from "../../ui/PremiumField";
 
+import Button from "../../ui/Button";
+
 
 
 
@@ -708,72 +710,23 @@ export default function EditPhoto({
 
 
 
-                <button
-
+                <Button
                     type="button"
-
                     onClick={onClose}
-
-                    className="
-                        rounded-lg
-                        border
-                        border-white/10
-                        px-4
-                        py-2
-                        text-xs
-                        text-text-soft
-                        transition
-                        hover:border-white/20
-                        hover:text-white
-                    "
-
+                    className="h-auto rounded-lg border border-white/10 px-4 py-2 text-xs text-text-soft"
                 >
-
                     Annuler
-
-                </button>
-
+                </Button>
 
 
 
 
-                <button
 
-                    type="submit"
+                <Button type="submit" disabled={loading}>
 
-                    disabled={loading}
+                    {loading ? "Sauvegarde..." : "Enregistrer"}
 
-                    className="
-                        rounded-lg
-                        bg-accent
-                        px-5
-                        py-2
-                        text-xs
-                        font-medium
-                        text-black
-                        transition
-                        hover:opacity-90
-                        disabled:opacity-50
-                    "
-
-                >
-
-                    {
-
-                        loading
-
-                        ?
-
-                        "Sauvegarde..."
-
-                        :
-
-                        "Enregistrer"
-
-                    }
-
-
-                </button>
+                </Button>
 
 
 
