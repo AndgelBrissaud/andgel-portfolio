@@ -1,9 +1,6 @@
 import {
-
     useEffect,
-
     useState
-
 } from "react";
 
 
@@ -22,6 +19,7 @@ import type {
 
 
 import PhotoCard from "./PhotoCard";
+import Spinner from "../ui/Spinner";
 
 
 
@@ -158,19 +156,11 @@ export default function PhotoGallery({
 
 
     if(loading){
-
-
         return (
-
-            <p className="text-text-muted">
-
-                Chargement des photographies...
-
-            </p>
-
+            <div className="py-8 flex justify-center">
+                <Spinner label="Chargement des photographies..." />
+            </div>
         );
-
-
     }
 
 

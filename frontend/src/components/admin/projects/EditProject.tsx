@@ -36,6 +36,7 @@ import CoverUploader from "./CoverUploader";
 import GalleryUploader from "./GalleryUploader";
 
 import Button from "../../ui/Button";
+import Spinner from "../../ui/Spinner";
 
 
 
@@ -828,9 +829,7 @@ export default function EditProject({
 
 
                     <Button type="submit" disabled={loading}>
-
-                        {loading ? "Sauvegarde..." : "Enregistrer"}
-
+                        {loading ? <div className="flex items-center justify-center"><Spinner size={16} /></div> : "Enregistrer"}
                     </Button>
 
 

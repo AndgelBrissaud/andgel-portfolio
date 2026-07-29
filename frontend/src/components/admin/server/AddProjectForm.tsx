@@ -1,5 +1,6 @@
 import { useState } from "react";
 import serverManagementApi from "../../../services/serverManagement.api";
+import Spinner from "../../ui/Spinner";
 
 interface Props {
   onAdded?: () => void;
@@ -81,9 +82,9 @@ export default function AddProjectForm({ onAdded }: Props) {
 
           {error && <div className="text-sm text-red-400">{error}</div>}
 
-          <div className="flex gap-2">
+            <div className="flex gap-2">
             <button type="submit" disabled={loading} className="btn-primary flex-1">
-              {loading ? "Ajout..." : "Ajouter"}
+              {loading ? <div className="flex items-center justify-center"><Spinner size={14} /></div> : "Ajouter"}
             </button>
 
             <button

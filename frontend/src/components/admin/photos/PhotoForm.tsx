@@ -27,6 +27,7 @@ import PremiumField from "../../ui/PremiumField";
 import PremiumSelect from "../../ui/PremiumSelect";
 
 import Button from "../../ui/Button";
+import Spinner from "../../ui/Spinner";
 
 
 import usePhotoCategories from "../../../hooks/usePhotoCategories";
@@ -863,9 +864,7 @@ export default function PhotoForm({
 
 
                 <Button type="submit" disabled={loading} className="w-full">
-
-                    {loading ? "Création..." : "Créer la photographie"}
-
+                    {loading ? <div className="flex items-center justify-center"><Spinner size={16} /></div> : "Créer la photographie"}
                 </Button>
 
 

@@ -5,6 +5,7 @@ import PhotoGallery from "../components/photos/PhotoGallery";
 import CategoryPhotos from "../components/photos/CategoryPhotos";
 import usePhotoCategories from "../hooks/usePhotoCategories";
 import usePhotos from "../hooks/usePhotos";
+import Spinner from "../components/ui/Spinner";
 import { Link } from "react-router-dom";
 import { getImageUrl } from "../services/api";
 import type { Photo } from "../types/photo";
@@ -68,7 +69,9 @@ export default function Photography(){
                 <div className="mx-auto max-w-7xl px-6">
 
                     {categoriesLoading && (
-                        <p className="text-text-muted">Chargement des catégories...</p>
+                        <div className="py-12 flex justify-center">
+                            <Spinner label="Chargement des catégories..." />
+                        </div>
                     )}
 
                     {categoriesError && (
@@ -97,7 +100,9 @@ export default function Photography(){
                                             className={`text-left overflow-hidden rounded-2xl border transition-transform duration-300 hover:scale-[1.01] ${selectedCategoryId===cat.id && viewMode==="gallery" ? "border-accent shadow-lg" : "border-white/10"} bg-surface`}>
                                             <div className="aspect-[16/9] bg-gray-800/30">
                                                 {photosLoading ? (
-                                                    <div className="flex items-center justify-center h-full text-text-muted">Chargement...</div>
+                                                    <div className="flex items-center justify-center h-full">
+                                                        <Spinner size={36} />
+                                                    </div>
                                                 ) : last ? (
                                                     <img src={getImageUrl(last.image)} alt={last.title} className="h-full w-full object-cover" />
                                                 ) : (

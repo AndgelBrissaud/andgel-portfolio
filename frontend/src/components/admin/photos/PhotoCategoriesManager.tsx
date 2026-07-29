@@ -5,6 +5,7 @@ import {
     deletePhotoCategory,
     createPhotoCategory
 } from "../../../services/photos.service";
+import Spinner from "../../ui/Spinner";
 
 import type { PhotoCategory } from "../../../types/photo";
 
@@ -82,7 +83,9 @@ export default function PhotoCategoriesManager(){
     if(loading){
         return (
             <section className="rounded-2xl border border-white/10 bg-surface p-5 text-center text-sm text-text-muted">
-                Chargement des catégories...
+                <div className="py-6 flex justify-center">
+                    <Spinner label="Chargement des catégories..." />
+                </div>
             </section>
         );
     }
@@ -100,7 +103,7 @@ export default function PhotoCategoriesManager(){
                 <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
                     <PremiumInput label="Nouvelle catégorie" value={name} onChange={setName} placeholder="Ex : Architecture, Portrait..." />
                     <Button type="button" compact onClick={handleCreate} disabled={creating} className="h-10 bg-accent px-5 text-xs font-medium text-black">
-                        {creating ? "Ajout..." : "Ajouter"}
+                        {creating ? <div className="flex items-center justify-center"><Spinner size={14} /></div> : "Ajouter"}
                     </Button>
                 </div>
             </div>

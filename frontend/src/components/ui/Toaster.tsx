@@ -1,27 +1,5 @@
 import { useToast } from "../../context/ToastContext";
 
-function Icon({ type }: { type: string }) {
-  if (type === "success")
-    return (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-        <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    );
-
-  if (type === "error")
-    return (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    );
-
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
-    </svg>
-  );
-}
-
 export default function Toaster() {
   const { toasts, remove } = useToast();
 
@@ -36,28 +14,21 @@ export default function Toaster() {
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') remove(t.id); }}
           className={
-            `max-w-sm w-full rounded-xl p-3 shadow-lg text-sm cursor-pointer transform transition-all duration-300 ease-out hover:scale-[1.02] flex items-start gap-3 select-none ` +
-            (t.type === "success"
-              ? "bg-green-600 text-white"
-              : t.type === "error"
-              ? "bg-red-600 text-white"
-              : "bg-gray-800 text-white")
+            `max-w-sm w-full rounded-none p-4 shadow-lg text-sm cursor-pointer transform transition-all duration-300 ease-out hover:translate-x-0.5 flex items-start gap-4 select-none border border-white/5 bg-gradient-to-r from-black/90 to-black/80 `
           }
           style={{
-            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+            boxShadow: "0 12px 40px rgba(0,0,0,0.28), 0 0 40px rgba(176,141,87,0.08)",
             willChange: "transform, opacity",
             pointerEvents: 'auto',
             animation: 'toast-in 320ms cubic-bezier(.22,1,.36,1)'
           }}
         >
-          <div className="flex-none mt-0.5" aria-hidden>
-            <Icon type={t.type} />
-          </div>
+          <div className="flex-none w-1 h-full bg-gradient-to-b from-[var(--color-accent)] to-transparent mr-3" aria-hidden />
           <div className="flex-1">
-            <div className="font-medium">{t.type === "success" ? "Succès" : t.type === "error" ? "Erreur" : "Info"}</div>
-            <div className="mt-1 text-sm leading-snug">{t.message}</div>
+            <div className="text-[11px] uppercase tracking-[0.25em] text-accent-light font-medium">{t.type === "success" ? "Succès" : t.type === "error" ? "Erreur" : "Info"}</div>
+            <div className="mt-2 text-sm leading-snug text-text">{t.message}</div>
           </div>
-          <div className="flex-none ml-3 opacity-80 hover:opacity-100">✕</div>
+          <button aria-label="Fermer" className="flex-none ml-4 text-white/70 hover:text-white text-lg">✕</button>
         </div>
       ))}
     </div>

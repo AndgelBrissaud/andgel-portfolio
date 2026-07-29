@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../../context/useAuth";
 import PremiumInput from "../ui/PremiumInput";
 import Button from "../ui/Button";
+import Spinner from "../ui/Spinner";
 
 export default function LoginForm(){
 
@@ -89,7 +90,7 @@ export default function LoginForm(){
 
                     <div className="w-full">
                     <Button type="submit" disabled={loading} className="w-full h-12 px-8">
-                        {loading ? "Connexion..." : "Se connecter"}
+                        {loading ? <div className="flex items-center justify-center"><Spinner size={18} /></div> : "Se connecter"}
                     </Button>
                     </div>
 
