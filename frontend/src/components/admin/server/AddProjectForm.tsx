@@ -1,5 +1,5 @@
 import { useState } from "react";
-import serverManagementApi from "../../services/serverManagement.api";
+import serverManagementApi from "../../../services/serverManagement.api";
 
 interface Props {
   onAdded?: () => void;
