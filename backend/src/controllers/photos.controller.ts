@@ -219,20 +219,16 @@ export function createPhoto(
 
 
 
+        // prefer explicit category value or fallback to category_id from the form
+        const categoryValue = req.body.category ?? req.body.category_id;
+
         const photo = createPhotoService(
-
             {
-
-                title:req.body.title,
-
-                category:req.body.category,
-
-                description:req.body.description
-
+                title: req.body.title,
+                category: categoryValue,
+                description: req.body.description,
             },
-
-            file
-
+            file,
         );
 
 
