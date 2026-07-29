@@ -136,7 +136,7 @@ export default function PhotoGallery({
 
             photo=>
 
-                photo.category?.id === categoryId
+                (photo.category && photo.category.id === categoryId) || photo.category_id === categoryId
 
         )
 

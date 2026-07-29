@@ -14,11 +14,12 @@ export default function Photography(){
     const { categories, loading: categoriesLoading, error: categoriesError } = usePhotoCategories();
     const { photos, loading: photosLoading } = usePhotos();
     const [ selectedCategoryId, setSelectedCategoryId ] = useState<number | null>(null);
+    const [ viewMode, setViewMode ] = useState<"categories" | "gallery">("categories");
 
     const lastPhotoByCategory = useMemo(() => {
         const map: Record<number, Photo | null> = {};
         categories.forEach(cat => {
-            const photosInCat = photos.filter(p => p.category?.id === cat.id);
+            const photosInCat = photos.filter(p => (p.category && p.category.id === cat.id) || p.category_id === cat.id);
             if(photosInCat.length === 0){
                 map[cat.id] = null;
                 return;
@@ -77,15 +78,15 @@ export default function Photography(){
 
                             <div className="flex gap-3 mb-6">
                                 <button
-                                    onClick={()=>setSelectedCategoryId(null)}
-                                    className={`rounded-full px-4 py-2 text-sm ${selectedCategoryId===null ? "bg-accent text-black" : "border border-white/10 text-white/70"}`}>
+                                    onClick={() => { setSelectedCategoryId(null); setViewMode("gallery"); }}
+                                    className={`rounded-full px-4 py-2 text-sm ${selectedCategoryId===null && viewMode==="gallery" ? "bg-accent text-black" : "border border-white/10 text-white/70"}`}>
                                     Toutes
                                 </button>
                                 {categories.map(cat => (
                                     <button
                                         key={cat.id}
-                                        onClick={()=>setSelectedCategoryId(cat.id)}
-                                        className={`rounded-full px-4 py-2 text-sm ${selectedCategoryId===cat.id ? "bg-accent text-black" : "border border-white/10 text-white/70"}`}>
+                                        onClick={() => { setSelectedCategoryId(cat.id); setViewMode("gallery"); }}
+                                        className={`rounded-full px-4 py-2 text-sm ${selectedCategoryId===cat.id && viewMode==="gallery" ? "bg-accent text-black" : "border border-white/10 text-white/70"}`}>
                                         {cat.name}
                                     </button>
                                 ))}
@@ -97,8 +98,8 @@ export default function Photography(){
                                     return (
                                         <button
                                             key={cat.id}
-                                            onClick={()=>setSelectedCategoryId(cat.id)}
-                                            className={`text-left overflow-hidden rounded-2xl border ${selectedCategoryId===cat.id ? "border-accent" : "border-white/10"} bg-surface`}>
+                                            onClick={()=>{ setSelectedCategoryId(cat.id); setViewMode("gallery"); }}
+                                            className={`text-left overflow-hidden rounded-2xl border transition-transform duration-300 hover:scale-[1.01] ${selectedCategoryId===cat.id && viewMode==="gallery" ? "border-accent shadow-lg" : "border-white/10"} bg-surface`}>
                                             <div className="aspect-[16/9] bg-gray-800/30">
                                                 {photosLoading ? (
                                                     <div className="flex items-center justify-center h-full text-text-muted">Chargement...</div>
@@ -128,13 +129,30 @@ export default function Photography(){
 
 
             {/* GALERIE PHOTOS */}
-            <section className="pb-24">
-                <div className="mx-auto max-w-7xl px-6">
+            {viewMode === "gallery" && (
+                <section className="pb-24">
+                    <div className="mx-auto max-w-7xl px-6">
 
-                    <PhotoGallery categoryId={selectedCategoryId} />
+                        <div className="mb-8 flex items-center justify-between">
+                            <div>
+                                <button
+                                    onClick={() => setViewMode("categories")}
+                                    className="text-sm text-text-muted hover:text-white mr-4"
+                                >
+                                    ← Retour aux catégories
+                                </button>
+                                <h2 className="font-title text-3xl">
+                                    {selectedCategoryId ? (categories.find(c => c.id === selectedCategoryId)?.name) : "Toutes les photos"}
+                                </h2>
+                            </div>
+                            <div className="text-text-muted text-sm">Sélectionnez une image pour l'agrandir</div>
+                        </div>
 
-                </div>
-            </section>
+                        <PhotoGallery categoryId={selectedCategoryId} />
+
+                    </div>
+                </section>
+            )}
 
 
             {/* CTA */}
