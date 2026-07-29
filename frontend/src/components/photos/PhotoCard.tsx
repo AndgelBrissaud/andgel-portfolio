@@ -6,9 +6,8 @@ import {
 
 
 import type {
-
-    Photo
-
+    Photo,
+    PhotoCategory,
 } from "../../types/photo";
 
 
@@ -52,6 +51,12 @@ export default function PhotoCard({
     onDelete
 
 }:PhotoCardProps){
+
+    const categoryLabel = (() => {
+        if (!photo.category) return null;
+        if (typeof photo.category === "object") return (photo.category as PhotoCategory).name;
+        return String(photo.category);
+    })();
 
 
 
@@ -144,32 +149,11 @@ export default function PhotoCard({
 
 
 
-                {
-
-                    photo.category && (
-
-                        <span
-
-                            className="
-                                inline-flex
-                                rounded-full
-                                border
-                                border-accent/30
-                                px-3
-                                py-1
-                                text-xs
-                                text-accent
-                            "
-
-                        >
-
-                            {photo.category.name}
-
-                        </span>
-
-                    )
-
-                }
+                {categoryLabel && (
+                    <span className="inline-flex rounded-full border border-accent/30 px-3 py-1 text-xs text-accent">
+                        {categoryLabel}
+                    </span>
+                )}
 
 
 

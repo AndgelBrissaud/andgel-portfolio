@@ -4,7 +4,8 @@ import {
 
 
 import type {
-    Photo
+    Photo,
+    PhotoCategory,
 } from "../../../types/photo";
 
 import Button from "../../ui/Button";
@@ -44,6 +45,12 @@ export default function PhotoCard({
     onDelete
 
 }:PhotoCardProps){
+
+    const categoryLabel = (() => {
+        if (!photo.category) return null;
+        if (typeof photo.category === "object") return (photo.category as PhotoCategory).name;
+        return String(photo.category);
+    })();
 
 
 
@@ -114,38 +121,11 @@ export default function PhotoCard({
 
 
 
-                {
-
-                    photo.category && (
-
-                        <span
-
-                            className="
-                                absolute
-                                left-3
-                                top-3
-                                rounded-full
-                                border
-                                border-accent/30
-                                bg-black/50
-                                px-2.5
-                                py-1
-                                text-[10px]
-                                uppercase
-                                tracking-[0.15em]
-                                text-accent
-                                backdrop-blur
-                            "
-
-                        >
-
-                            {photo.category.name}
-
-                        </span>
-
-                    )
-
-                }
+                {categoryLabel && (
+                    <span className="absolute left-3 top-3 rounded-full border border-accent/30 bg-black/50 px-2.5 py-1 text-[10px] uppercase tracking-[0.15em] text-accent backdrop-blur">
+                        {categoryLabel}
+                    </span>
+                )}
 
 
 

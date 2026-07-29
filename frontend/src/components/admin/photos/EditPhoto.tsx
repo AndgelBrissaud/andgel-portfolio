@@ -20,9 +20,7 @@ import type {
 } from "../../../types/photo";
 
 
-import {
-    getImageUrl
-} from "../../../services/api";
+import { getImageUrl } from "../../../services/api";
 
 
 import usePhotoCategories from "../../../hooks/usePhotoCategories";
@@ -80,9 +78,25 @@ export default function EditPhoto({
 
 
 
+    const getCategoryIdFromValue = (val: unknown): number | "" => {
+        if (val === null || val === undefined || val === "") return "";
+        if (typeof val === "number") return val;
+        if (typeof val === "string") {
+            if (/^\d+$/.test(val)) return Number(val);
+            return "";
+        }
+        if (typeof val === "object") {
+            const obj = val as Record<string, unknown>;
+            const id = obj["id"];
+            if (typeof id === "number") return id;
+            if (typeof id === "string" && /^\d+$/.test(id)) return Number(id);
+        }
+        return "";
+    };
+
     const [categoryId,setCategoryId] =
         useState<number | "">(
-            photo.category?.id ?? ""
+            getCategoryIdFromValue(photo.category)
         );
 
 

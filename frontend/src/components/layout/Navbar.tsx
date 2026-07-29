@@ -191,9 +191,13 @@ export default function Navbar() {
                     {isAdminPath ? (
                         <>
                             {adminLinks.map((link) => (
-                                <button key={link.path} onClick={() => navigate(link.path)} className="text-sm px-3 py-2 rounded-md bg-white/5 text-white hover:bg-white/10">
+                                <NavLink
+                                    key={link.path}
+                                    to={link.path}
+                                    className={({ isActive }) => `relative text-sm uppercase tracking-[0.2em] transition duration-300 ${isActive ? 'text-accent' : 'text-text-soft hover:text-accent'}`}
+                                >
                                     {link.label}
-                                </button>
+                                </NavLink>
                             ))}
                             <button onClick={() => { auth.logout(); navigate('/login'); }} className="ml-4 text-sm rounded-md px-3 py-2 bg-red-500/10 text-red-300 hover:bg-red-500/20">Déconnexion</button>
                         </>
@@ -268,19 +272,17 @@ export default function Navbar() {
                         </div>
 
                         <ul className="mt-2 flex flex-col gap-4">
-                            {isAdminPath ? (
+                                {isAdminPath ? (
                                 <>
                                     {adminLinks.map((link) => (
                                         <li key={link.path}>
-                                            <button
-                                                onClick={() => {
-                                                    navigate(link.path);
-                                                    setOpen(false);
-                                                }}
-                                                className="block w-full text-center text-lg py-3 rounded text-accent font-semibold"
+                                            <NavLink
+                                                to={link.path}
+                                                onClick={() => setOpen(false)}
+                                                className={({isActive}) => `block w-full text-center text-lg py-3 rounded ${isActive ? 'text-accent font-semibold' : 'text-text-soft hover:text-accent'}`}
                                             >
                                                 {link.label}
-                                            </button>
+                                            </NavLink>
                                         </li>
                                     ))}
 
