@@ -35,6 +35,7 @@ export default function AdminServer() {
 
   const [systemInfo, setSystemInfo] = useState<import("../../types/server").SystemInfo | null>(null);
   const [systemLoading, setSystemLoading] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
   const loadProjects = useCallback(async () => {
     try {
@@ -51,7 +52,35 @@ export default function AdminServer() {
   }, []);
 
   useEffect(() => {
-    void Promise.resolve().then(loadProjects);
+
+    let cancelled = false;
+
+    async function refreshProjects(){
+
+      if(cancelled){
+        return;
+      }
+
+      await loadProjects();
+
+    }
+
+    void Promise.resolve().then(refreshProjects);
+
+    const interval = window.setInterval(() => {
+
+      void Promise.resolve().then(refreshProjects);
+
+    },10000);
+
+    return () => {
+
+      cancelled = true;
+
+      window.clearInterval(interval);
+
+    };
+
   }, [loadProjects]);
 
   useEffect(() => {
@@ -100,21 +129,50 @@ export default function AdminServer() {
   }, [selectedLogs]);
 
   useEffect(() => {
+    let cancelled = false;
+
     async function loadSystem() {
       try {
-        setSystemLoading(true);
+        if (!cancelled) {
+          setSystemLoading(true);
+        }
 
         const info = await serverManagementApi.getSystemInfo();
 
-        setSystemInfo(info);
+        if (!cancelled) {
+          setSystemInfo(info);
+          setLastUpdate(new Date());
+        }
+
       } catch (error) {
+
         console.error(error);
+
       } finally {
-        setSystemLoading(false);
+
+        if (!cancelled) {
+          setSystemLoading(false);
+        }
+
       }
     }
 
     void Promise.resolve().then(loadSystem);
+
+    const interval = window.setInterval(() => {
+
+      void Promise.resolve().then(loadSystem);
+
+    }, 5000);
+
+    return () => {
+
+      cancelled = true;
+
+      window.clearInterval(interval);
+
+    };
+
   }, []);
 
   async function saveCompose(content: string) {
@@ -181,7 +239,8 @@ export default function AdminServer() {
           {systemLoading || !systemInfo ? (
             <div className="text-text-muted">Chargement des ressources...</div>
           ) : (
-            <div className="grid grid-cols-2 gap-4">
+            <>
+              <div className="grid grid-cols-2 gap-4">
               <div className="rounded-2xl border border-white/10 bg-surface p-4">
                 <p className="text-sm text-text-muted">Mémoire</p>
                 <p className="mt-2 font-title text-xl">
@@ -195,7 +254,12 @@ export default function AdminServer() {
                   {systemInfo.disk ? `${Math.round(systemInfo.disk.used / (1024 * 1024 * 1024))} Go / ${Math.round(systemInfo.disk.total / (1024 * 1024 * 1024))} Go` : "N/A"}
                 </p>
               </div>
-            </div>
+              </div>
+
+              <p className="text-xs text-text-muted mt-2">
+                Mise à jour : {lastUpdate ? lastUpdate.toLocaleTimeString() : "-"}
+              </p>
+            </>
           )}
         </div>
         <div
