@@ -206,93 +206,117 @@ export default function AdminServer() {
           des services du portfolio.
         "
       >
-        <div className="mb-4 flex items-center justify-end">
-          <button
-            type="button"
-            className="btn-primary"
-            onClick={async () => {
-              const name = window.prompt("Nom du projet (ex: mon-projet)");
-              if (!name) return;
-
-              const path = window.prompt("Chemin du projet sur le serveur (ex: /opt/docker/mon-projet)");
-              if (!path) return;
-
-              try {
-                await serverManagementApi.addProject(name, path);
-
-                await loadProjects();
-
-                alert("Projet ajouté");
-              } catch (error) {
-                console.error(error);
-                alert(error instanceof Error ? error.message : "Erreur");
-              }
-            }}
-          >
-            ➕ Ajouter un projet
-          </button>
-        </div>
-
         <div className="mb-6">
-          <h4 className="font-medium mb-2">Ressources serveur</h4>
-
-          {systemLoading || !systemInfo ? (
-            <div className="text-text-muted">Chargement des ressources...</div>
-          ) : (
-            <>
-              <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-4 md:grid-cols-3">
+            {/* Left: system cards */}
+            <div className="md:col-span-2 grid gap-3">
               <div className="rounded-2xl border border-white/10 bg-surface p-4">
-                <p className="text-sm text-text-muted">Mémoire</p>
-                <p className="mt-2 font-title text-xl">
-                  {Math.round(systemInfo.memory.used / (1024 * 1024))} Mo / {Math.round(systemInfo.memory.total / (1024 * 1024))} Mo
-                </p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-text-muted">Ressources serveur</p>
+                    <h3 className="mt-1 font-title text-xl">Vue d'ensemble</h3>
+                  </div>
+                  <div className="text-xs text-text-muted">Mise à jour : {lastUpdate ? lastUpdate.toLocaleTimeString() : "-"}</div>
+                </div>
+
+                {systemLoading || !systemInfo ? (
+                  <div className="mt-4 text-text-muted">Chargement des ressources...</div>
+                ) : (
+                  <div className="mt-4 grid gap-3">
+                    <div>
+                      <div className="flex items-center justify-between text-sm text-text-muted">
+                        <span>Mémoire</span>
+                        <span className="font-medium">{Math.round(systemInfo.memory.used / (1024 * 1024))} Mo / {Math.round(systemInfo.memory.total / (1024 * 1024))} Mo</span>
+                      </div>
+                      <div className="w-full bg-white/5 rounded-full h-2 mt-2 overflow-hidden">
+                        <div
+                          className="bg-accent h-2"
+                          style={{ width: `${Math.round((systemInfo.memory.used / systemInfo.memory.total) * 100)}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between text-sm text-text-muted">
+                        <span>Disque (/)</span>
+                        <span className="font-medium">{systemInfo.disk ? `${Math.round(systemInfo.disk.used / (1024 * 1024 * 1024))} Go / ${Math.round(systemInfo.disk.total / (1024 * 1024 * 1024))} Go` : "N/A"}</span>
+                      </div>
+                      <div className="w-full bg-white/5 rounded-full h-2 mt-2 overflow-hidden">
+                        <div
+                          className="bg-emerald-500 h-2"
+                          style={{ width: systemInfo.disk ? `${Math.round((systemInfo.disk.used / systemInfo.disk.total) * 100)}%` : "0%" }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
+              <div className="rounded-2xl border border-white/10 bg-surface p-3 flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-text-muted">Détails Docker</p>
+                  <p className="mt-1 font-title text-lg">{projects.length} projet{projects.length > 1 ? "s" : ""} enregistrés</p>
+                </div>
+                <div className="space-x-2">
+                  <button
+                    type="button"
+                    className="btn-outline"
+                    onClick={() => void loadProjects()}
+                  >
+                    🔁 Rafraîchir
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: controls & quick stats */}
+            <aside className="space-y-3">
               <div className="rounded-2xl border border-white/10 bg-surface p-4">
-                <p className="text-sm text-text-muted">Disque (/) </p>
-                <p className="mt-2 font-title text-xl">
-                  {systemInfo.disk ? `${Math.round(systemInfo.disk.used / (1024 * 1024 * 1024))} Go / ${Math.round(systemInfo.disk.total / (1024 * 1024 * 1024))} Go` : "N/A"}
-                </p>
+                <p className="text-sm text-text-muted">Actions</p>
+                <div className="mt-3 flex flex-col gap-2">
+                  <button
+                    type="button"
+                    className="btn-primary w-full"
+                    onClick={async () => {
+                      const name = window.prompt("Nom du projet (ex: mon-projet)");
+                      if (!name) return;
+
+                      const path = window.prompt("Chemin du projet sur le serveur (ex: /opt/docker/mon-projet)");
+                      if (!path) return;
+
+                      try {
+                        await serverManagementApi.addProject(name, path);
+
+                        await loadProjects();
+
+                        alert("Projet ajouté");
+                      } catch (error) {
+                        console.error(error);
+                        alert(error instanceof Error ? error.message : "Erreur");
+                      }
+                    }}
+                  >
+                    ➕ Ajouter un projet
+                  </button>
+
+                  <button
+                    type="button"
+                    className="btn-outline w-full"
+                    onClick={() => void loadProjects()}
+                  >
+                    🔁 Actualiser les projets
+                  </button>
+                </div>
               </div>
+
+              <div className="grid grid-cols-1 gap-2">
+                <ServerCard title="Projets" value={loading ? "..." : String(projects.length)} description="Projets Docker enregistrés." />
+                <ServerCard title="Docker" value={projects.length ? "Connecté" : "Aucun projet"} description="Etat du moteur Docker." />
+                <ServerCard title="Frontend" value={`${projects.filter((p) => p.frontend_container).length} services`} description="Containers frontend détectés." />
+                <ServerCard title="Backend" value={`${projects.filter((p) => p.backend_container).length} services`} description="Containers backend détectés." />
               </div>
-
-              <p className="text-xs text-text-muted mt-2">
-                Mise à jour : {lastUpdate ? lastUpdate.toLocaleTimeString() : "-"}
-              </p>
-            </>
-          )}
-        </div>
-        <div
-          className="
-            grid
-            gap-6
-            md:grid-cols-2
-            xl:grid-cols-4
-          "
-        >
-          <ServerCard
-            title="Projets"
-            value={loading ? "..." : String(projects.length)}
-            description="Projets Docker enregistrés."
-          />
-
-          <ServerCard
-            title="Docker"
-            value={projects.length ? "Connecté" : "Aucun projet"}
-            description="Etat du moteur Docker."
-          />
-
-          <ServerCard
-            title="Frontend"
-            value={`${projects.filter((p) => p.frontend_container).length} services`}
-            description="Containers frontend détectés."
-          />
-
-          <ServerCard
-            title="Backend"
-            value={`${projects.filter((p) => p.backend_container).length} services`}
-            description="Containers backend détectés."
-          />
+            </aside>
+          </div>
         </div>
       </AdminSection>
       <AdminSection
@@ -372,15 +396,7 @@ interface ServerCardProps {
 
 function ServerCard({ title, value, description }: ServerCardProps) {
   return (
-    <article
-      className="
-        rounded-2xl
-        border
-        border-white/10
-        bg-surface
-        p-6
-      "
-    >
+    <article className="rounded-2xl border border-white/10 bg-surface p-4">
       <p
         className="
           text-xs
@@ -392,13 +408,7 @@ function ServerCard({ title, value, description }: ServerCardProps) {
         {title}
       </p>
 
-      <h3
-        className="
-          mt-4
-          font-title
-          text-3xl
-        "
-      >
+      <h3 className="mt-3 font-title text-2xl"> 
         {value}
       </h3>
 
