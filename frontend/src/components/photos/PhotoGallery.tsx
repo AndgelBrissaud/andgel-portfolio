@@ -264,6 +264,8 @@ function Lightbox({ photos, index, onClose, onNavigate, isClosing }: LightboxPro
     const prevPropIndex = useRef(index);
     const [transitioning, setTransitioning] = useState(false);
     const [trackTranslate, setTrackTranslate] = useState<'0' | '-50%'>('0');
+    // mount animation state for open animation
+    const [isMounted, setIsMounted] = useState(false);
 
     // when parent index changes, run slide animation
     useEffect(() => {
@@ -288,6 +290,17 @@ function Lightbox({ photos, index, onClose, onNavigate, isClosing }: LightboxPro
 
         return () => clearTimeout(t);
     }, [index, photos, displayIndex]);
+
+    // trigger mount animation after render
+    useEffect(() => {
+        let id: number | undefined;
+        // small delay to allow CSS transition from initial state
+        id = window.setTimeout(() => setIsMounted(true), 20);
+        return () => {
+            if (id) window.clearTimeout(id);
+            setIsMounted(false);
+        };
+    }, []);
 
     // preload next / previous images for smoother navigation
     useEffect(() => {
@@ -317,12 +330,12 @@ function Lightbox({ photos, index, onClose, onNavigate, isClosing }: LightboxPro
             aria-label={photo.title || 'Image'}
             onClick={onClose}
         >
-            <div className="absolute inset-0 bg-black/70" />
-            <div ref={containerRef} className="relative max-h-[90vh] max-w-[90vw] z-[10000]" onClick={(e) => e.stopPropagation()} aria-labelledby="lightbox-title" aria-describedby="lightbox-desc">
+            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300" />
+            <div ref={containerRef} className={`relative max-h-[90vh] max-w-[90vw] z-[10000] ${isClosing ? 'scale-95' : isMounted ? 'scale-100' : 'scale-95'} transition-transform duration-300`} onClick={(e) => e.stopPropagation()} aria-labelledby="lightbox-title" aria-describedby="lightbox-desc">
                 <button
                     ref={closeBtnRef}
                     onClick={onClose}
-                    className="absolute right-0 top-0 m-2 z-[10001] bg-black/50 hover:bg-black/60 rounded-full p-2 text-white text-2xl cursor-pointer"
+                    className="absolute right-0 top-0 m-2 z-[10001] bg-black/50 hover:bg-black/60 rounded-full p-3 text-white text-2xl cursor-pointer hover:scale-105 transition-transform"
                     aria-label="Fermer"
                 >
                     ✕
@@ -331,8 +344,8 @@ function Lightbox({ photos, index, onClose, onNavigate, isClosing }: LightboxPro
                 <div className={`overflow-hidden w-[80vw] h-[80vh] flex items-center justify-center`}> 
                     {/* when transitioning render track with outgoing+incoming, otherwise single image */}
                     {!transitioning && (
-                        <div className={`transform ${isClosing ? "scale-95 opacity-0" : "scale-100 opacity-100"} transition-all duration-300 ease-out`}>
-                            <img src={getImageUrl(photos[displayIndex].image)} alt={photos[displayIndex].title} className="max-h-[80vh] max-w-[80vw] object-contain transition-transform duration-300 ease-out drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)]" />
+                        <div className={`transform ${isClosing ? "scale-95 opacity-0" : isMounted ? "scale-100 opacity-100" : "scale-95 opacity-0"} transition-all duration-350 ease-out`}>
+                            <img src={getImageUrl(photos[displayIndex].image)} alt={photos[displayIndex].title} className="max-h-[80vh] max-w-[80vw] object-contain transition-transform duration-500 ease-out drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)] rounded-md bg-black/5 cursor-zoom-out" />
                         </div>
                     )}
 
