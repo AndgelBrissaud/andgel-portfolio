@@ -37,11 +37,8 @@ function parsePhoto(
 
         title:row.title,
 
-
-        // return category_id when available and try to resolve category object
         category_id: row.category_id ?? undefined,
         category: (function(){
-            // Prefer resolving by category_id when explicitly present (allow 0 values to be handled)
             if(row.category_id !== undefined && row.category_id !== null && row.category_id !== ''){
                 try{
                     const cat = db.prepare(`SELECT id, name, created_at FROM photo_categories WHERE id = ?`).get(row.category_id) as any;

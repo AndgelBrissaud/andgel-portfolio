@@ -144,7 +144,7 @@ export default function Photography() {
                         setSelectedCategoryId(0);
                         setViewMode("gallery");
                       }}
-                      className={`text-left overflow-hidden rounded-2xl border transition-transform duration-300 hover:scale-[1.01] ${selectedCategoryId === 0 && viewMode === "gallery" ? "border-accent shadow-lg" : "border-white/10"} bg-surface`}
+                      className={`text-left overflow-hidden border transition-transform duration-300 hover:scale-[1.01] ${selectedCategoryId === 0 && viewMode === "gallery" ? "border-accent shadow-lg" : "border-white/10"} bg-surface`}
                     >
                       <div className="aspect-[16/9] bg-gray-800/30">
                         {photosLoading ? (
@@ -179,7 +179,7 @@ export default function Photography() {
                           setSelectedCategoryId(cat.id);
                           setViewMode("gallery");
                         }}
-                        className={`text-left overflow-hidden rounded-2xl border transition-transform duration-300 hover:scale-[1.01] ${selectedCategoryId === cat.id && viewMode === "gallery" ? "border-accent shadow-lg" : "border-white/10"} bg-surface`}
+                        className={`text-left overflow-hidden border transition-transform duration-300 hover:scale-[1.01] ${selectedCategoryId === cat.id && viewMode === "gallery" ? "border-accent shadow-lg" : "border-white/10"} bg-surface`}
                       >
                         <div className="aspect-[16/9] bg-gray-800/30">
                           {photosLoading ? (

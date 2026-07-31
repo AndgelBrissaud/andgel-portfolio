@@ -224,13 +224,13 @@ export default function Navbar() {
 
                 <button
                     onClick={() => setOpen(!open)}
-                    className="md:hidden p-2"
-                    aria-label="Menu"
+                    className="md:hidden p-2 rounded-md bg-white/3 hover:bg-white/6 focus:outline-none focus:ring-2 focus:ring-accent"
+                    aria-label="Ouvrir le menu"
                     aria-expanded={open}
                     aria-controls="mobile-menu"
                 >
                     <span className="sr-only">Ouvrir le menu</span>
-                    <div className={`w-7 h-7 relative flex items-center justify-center`}> 
+                    <div className={`w-8 h-8 relative flex items-center justify-center`}> 
                         <span className={`block absolute w-6 h-[2px] bg-text transition-transform duration-300 ${open ? 'rotate-45' : '-translate-y-1.5'}`} />
                         <span className={`block absolute w-6 h-[2px] bg-text transition-opacity duration-300 ${open ? 'opacity-0' : 'opacity-100'}`} />
                         <span className={`block absolute w-6 h-[2px] bg-text transition-transform duration-300 ${open ? '-rotate-45' : 'translate-y-1.5'}`} />
@@ -255,7 +255,7 @@ export default function Navbar() {
             {/* Menu mobile: overlay */}
             <div
                 id="mobile-menu"
-                className={`md:hidden fixed inset-0 z-40 transition-all duration-300 ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                className={`md:hidden fixed inset-0 z-40 transition-opacity duration-300 ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
             >
                 {/* backdrop */}
                 <button
@@ -264,14 +264,17 @@ export default function Navbar() {
                     className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity ${open ? 'opacity-100' : 'opacity-0'}`}
                 />
 
-                {/* panel */}
-                <div className={`relative h-full flex items-center justify-center p-6`}> 
-                    <nav className={`bg-background/95 w-full max-w-md rounded-xl p-6 transform transition-transform ${open ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
-                        <div className="flex justify-end">
-                            <button aria-label="Fermer" className="p-2" onClick={() => setOpen(false)}>✕</button>
+                {/* right-side drawer panel */}
+                <div className={`relative h-full flex items-start justify-end p-4`}> 
+                    <nav className={`bg-background/95 w-full max-w-xs h-full rounded-l-xl p-6 transform shadow-2xl transition-transform ${open ? 'translate-x-0' : 'translate-x-full'}`}>
+                        <div className="flex items-center justify-between mb-6">
+                            <NavLink to="/" onClick={() => setOpen(false)} className="flex items-center gap-3">
+                                <span className="font-title text-2xl text-accent">PA</span>
+                            </NavLink>
+                            <button aria-label="Fermer" className="p-2 rounded-md bg-white/3 hover:bg-white/6 focus:outline-none" onClick={() => setOpen(false)}>✕</button>
                         </div>
 
-                        <ul className="mt-2 flex flex-col gap-4">
+                        <ul className="mt-2 flex flex-col gap-3">
                                 {isAdminPath ? (
                                 <>
                                     {adminLinks.map((link) => (
@@ -279,7 +282,7 @@ export default function Navbar() {
                                             <NavLink
                                                 to={link.path}
                                                 onClick={() => setOpen(false)}
-                                                className={({isActive}) => `block w-full text-center text-lg py-3 rounded ${isActive ? 'text-accent font-semibold' : 'text-text-soft hover:text-accent'}`}
+                                                className={({isActive}) => `block w-full text-left text-lg py-3 px-3 rounded ${isActive ? 'text-accent font-semibold' : 'text-text-soft hover:text-accent'}`}
                                             >
                                                 {link.label}
                                             </NavLink>
@@ -293,7 +296,7 @@ export default function Navbar() {
                                                 navigate('/login');
                                                 setOpen(false);
                                             }}
-                                            className="block w-full text-center text-lg py-3 rounded text-red-300"
+                                            className="block w-full text-left text-lg py-3 px-3 rounded text-red-300"
                                         >
                                             Déconnexion
                                         </button>
@@ -305,7 +308,7 @@ export default function Navbar() {
                                         <NavLink
                                             to={link.path}
                                             onClick={() => setOpen(false)}
-                                            className={({isActive}) => `block w-full text-center text-lg py-3 rounded ${isActive ? 'text-accent font-semibold' : 'text-text-soft hover:text-accent'}`}
+                                            className={({isActive}) => `block w-full text-left text-lg py-3 px-3 rounded ${isActive ? 'text-accent font-semibold' : 'text-text-soft hover:text-accent'}`}
                                         >
                                             {link.label}
                                         </NavLink>

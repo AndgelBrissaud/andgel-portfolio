@@ -115,10 +115,10 @@ export default function PhotoCategoriesManager(){
             {sortedCategories.length === 0 ? (
                 <div className="rounded-xl border border-white/10 bg-black/20 p-6 text-center text-sm text-text-muted">Aucune catégorie.</div>
             ) : (
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                     {sortedCategories.map(category => (
-                        <article key={category.id} className="group flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/20 px-4 py-3 transition hover:border-accent/40">
-                            <span className="flex-1 min-w-0 text-sm text-white break-words">{category.name}</span>
+                        <article key={category.id} className="group flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/20 px-4 py-3 transition hover:border-accent/40 min-h-[48px]">
+                            <span className="flex-1 min-w-0 text-sm text-white truncate">{category.name}</span>
                             <Button type="button" compact onClick={() => handleDelete(category)} className="flex-none text-[10px] uppercase tracking-wide text-red-400 hover:text-red-300">Supprimer</Button>
                         </article>
                     ))}

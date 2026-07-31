@@ -1,6 +1,7 @@
 import db from "../config/database.js";
 
 import dockerUtils from "../utils/docker.utils.js";
+import type { DockerContainer } from "../utils/docker.utils.js";
 
 import composeUtils from "../utils/compose.utils.js";
 
@@ -48,7 +49,13 @@ class ServerManagementService {
 
       .all() as ServerProject[];
 
-    const containers = await dockerUtils.getContainers();
+    let containers: DockerContainer[] = [];
+    try {
+      containers = await dockerUtils.getContainers();
+    } catch (err) {
+      console.warn("serverManagement.getProjects: docker.getContainers failed:", err instanceof Error ? err.message : err);
+      containers = [];
+    }
 
     for (const project of projects) {
       const related = containers.filter((container) => {
@@ -316,7 +323,13 @@ class ServerManagementService {
   async getProjectStatus(id: number) {
     const project = await this.getProject(id);
 
-    const containers = await dockerUtils.getContainers();
+    let containers: DockerContainer[] = [];
+    try {
+      containers = await dockerUtils.getContainers();
+    } catch (err) {
+      console.warn("serverManagement.getProjectStatus: docker.getContainers failed:", err instanceof Error ? err.message : err);
+      containers = [];
+    }
 
     const related = containers.filter((container) => {
       const name = container.name.toLowerCase();

@@ -25,6 +25,7 @@ interface PhotoCardProps {
     onEdit?: (photo: Photo)=>void;
 
     onDelete?: (photo: Photo)=>void;
+    onView?: (photo: Photo)=>void;
 
 }
 
@@ -37,13 +38,10 @@ interface PhotoCardProps {
 
 
 export default function PhotoCard({
-
     photo,
-
     onEdit,
-
-    onDelete
-
+    onDelete,
+    onView,
 }:PhotoCardProps){
 
     const categoryLabel = (() => {
@@ -86,35 +84,20 @@ export default function PhotoCard({
             {/* IMAGE */}
 
             <div
-
-                className="
-                    relative
-                    aspect-[4/3]
-                    overflow-hidden
-                    bg-black/20
-                "
-
+                className="relative aspect-[4/3] overflow-hidden bg-black/20"
+                onClick={() => (onView ? onView(photo) : undefined)}
+                role={onView ? "button" : undefined}
+                tabIndex={onView ? 0 : undefined}
+                onKeyDown={(e) => {
+                    if (onView && (e.key === "Enter" || e.key === " ")) onView(photo);
+                }}
+                style={{ cursor: onView ? "pointer" : undefined }}
             >
-
-
-
                 <img
-
                     src={getImageUrl(photo.image)}
-
                     alt={photo.title}
-
                     loading="lazy"
-
-                    className="
-                        h-full
-                        w-full
-                        object-cover
-                        transition-transform
-                        duration-700
-                        group-hover:scale-105
-                    "
-
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
 
 
