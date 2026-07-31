@@ -107,10 +107,20 @@ export default function PhotoGallery({ categoryId, categories }: PhotoGalleryPro
     }
 
     return (
-        <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
-            {filteredPhotos.map((photo, idx) => (
-                <PhotoCard key={photo.id} photo={photo} onView={() => { setSelectedIndex(idx); setIsClosing(false); }} />
-            ))}
+        <div className="grid gap-6 items-stretch grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {filteredPhotos.map((photo, idx) => {
+                const isFeatured = idx === 0;
+                const extraClass = isFeatured ? 'sm:col-span-2 md:col-span-2 lg:col-span-2' : '';
+                return (
+                    <PhotoCard
+                        key={photo.id}
+                        photo={photo}
+                        featured={isFeatured}
+                        className={`${extraClass} h-full flex flex-col`}
+                        onView={() => { setSelectedIndex(idx); setIsClosing(false); }}
+                    />
+                );
+            })}
 
             {selectedIndex !== null && (
                 <Lightbox
