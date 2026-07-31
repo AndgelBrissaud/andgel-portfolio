@@ -55,22 +55,7 @@ export default function PhotoCard({
     return (
 
         <article
-
-            className="
-                group
-                flex
-                h-full
-                flex-col
-                overflow-hidden
-                rounded-2xl
-                border
-                border-white/10
-                bg-surface
-                transition-all
-                duration-500
-                hover:border-accent/30
-            "
-
+            className="admin-card group"
         >
 
 
@@ -105,7 +90,7 @@ export default function PhotoCard({
 
 
                 {categoryLabel && (
-                    <span className="absolute left-3 top-3 rounded-full border border-accent/30 bg-black/50 px-2.5 py-1 text-[10px] uppercase tracking-[0.15em] text-accent backdrop-blur">
+                    <span className="absolute left-3 top-3 border border-accent/30 bg-black/50 px-2.5 py-1 text-[10px] uppercase tracking-[0.15em] text-accent backdrop-blur">
                         {categoryLabel}
                     </span>
                 )}
@@ -124,17 +109,7 @@ export default function PhotoCard({
 
             {/* CONTENT */}
 
-            <div
-
-                className="
-                    flex
-                    flex-1
-                    flex-col
-                    gap-3
-                    p-4
-                "
-
-            >
+            <div className="card-content flex flex-col gap-3">
 
 
 
@@ -238,19 +213,11 @@ export default function PhotoCard({
 
 
 
-                            {
-
-                                onEdit && (
-
-                                    <Button type="button" compact onClick={()=>onEdit(photo)} className="rounded-lg px-3 py-2 text-xs text-text-soft hover:border-accent/40 hover:text-white">
-
-                                        Modifier
-
-                                    </Button>
-
-                                )
-
-                            }
+                            {onEdit && (
+                                <Button type="button" compact onClick={() => onEdit(photo)} className="text-xs text-text-soft hover:border-accent/40 hover:text-white">
+                                    Modifier
+                                </Button>
+                            )}
 
 
 
@@ -260,19 +227,11 @@ export default function PhotoCard({
 
 
 
-                            {
-
-                                onDelete && (
-
-                                    <Button type="button" compact onClick={()=>onDelete(photo)} className="rounded-lg px-3 py-2 text-xs text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-400/20">
-
-                                        Supprimer
-
-                                    </Button>
-
-                                )
-
-                            }
+                            {onDelete && (
+                                <Button type="button" compact onClick={() => onDelete(photo)} className="text-xs text-red-400 hover:text-red-300">
+                                    Supprimer
+                                </Button>
+                            )}
 
 
 

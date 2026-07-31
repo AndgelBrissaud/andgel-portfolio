@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import { getPhotos } from "../../services/photos.service";
 import { getImageUrl } from "../../services/api";
 import type { Photo } from "../../types/photo";
@@ -156,6 +157,23 @@ function Lightbox({ photos, index, onClose, onNavigate, isClosing }: LightboxPro
     const containerRef = useRef<HTMLDivElement | null>(null);
     const prevActiveElement = useRef<HTMLElement | null>(null);
     const [announcement, setAnnouncement] = useState('');
+    const [portalEl, setPortalEl] = useState<HTMLDivElement | null>(null);
+    const portalRef = useRef<HTMLDivElement | null>(null);
+
+    // create a portal root attached to document.body so lightbox always overlays everything
+    useEffect(() => {
+        const el = document.createElement('div');
+        document.body.appendChild(el);
+        portalRef.current = el;
+        // avoid synchronous setState during effect — defer to next tick
+        const t = window.setTimeout(() => setPortalEl(el), 0);
+        return () => {
+            clearTimeout(t);
+            if (portalRef.current && portalRef.current.parentNode) portalRef.current.parentNode.removeChild(portalRef.current);
+            portalRef.current = null;
+            setPortalEl(null);
+        };
+    }, []);
 
     // manage focus and keyboard (Escape, arrows, Tab trap)
     useEffect(() => {
@@ -321,7 +339,7 @@ function Lightbox({ photos, index, onClose, onNavigate, isClosing }: LightboxPro
         };
     }, [index, photos]);
 
-    return (
+    const markup = (
         <div
             className={`fixed inset-0 z-[9999] flex items-center justify-center p-6 transition-opacity duration-200 ${isClosing ? "opacity-0" : "opacity-100"}`}
             role="dialog"
@@ -398,4 +416,7 @@ function Lightbox({ photos, index, onClose, onNavigate, isClosing }: LightboxPro
             </div>
         </div>
     );
+
+    if (!portalEl) return null;
+    return createPortal(markup, portalEl);
 }

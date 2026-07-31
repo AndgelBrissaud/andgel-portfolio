@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import PhotoForm from "../../components/admin/photos/PhotoForm";
+import PhotoForm from "../../components/admin/projects/ProjectForm";
 import PhotosList from "../../components/admin/photos/PhotosList";
 import PhotoCategoriesManager from "../../components/admin/photos/PhotoCategoriesManager";
 

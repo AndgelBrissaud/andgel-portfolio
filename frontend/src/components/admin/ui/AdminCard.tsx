@@ -12,18 +12,10 @@ export default function AdminCard({
 
 }:Props){
 
-    return(
-
-        <div
-
-            className="rounded-3xl border border-white/10 bg-surface p-4 shadow-shadow-soft"
-
-        >
-
-            {children}
-
+    return (
+        <div className="admin-card">
+            <div className="card-content">{children}</div>
         </div>
-
     );
 
 }

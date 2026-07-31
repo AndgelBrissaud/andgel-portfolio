@@ -82,7 +82,7 @@ export default function PhotoCategoriesManager(){
 
     if(loading){
         return (
-            <section className="rounded-2xl border border-white/10 bg-surface p-5 text-center text-sm text-text-muted">
+            <section className="border border-white/10 bg-surface p-6 text-center text-sm text-text-muted">
                 <div className="py-6 flex justify-center">
                     <Spinner label="Chargement des catégories..." />
                 </div>
@@ -91,7 +91,7 @@ export default function PhotoCategoriesManager(){
     }
 
     return (
-        <section className="space-y-6 rounded-2xl border border-white/10 bg-surface p-4 shadow-shadow-soft sm:p-5">
+        <section className="space-y-6 admin-card">
 
             <header className="space-y-2">
                 <p className="text-[10px] uppercase tracking-[0.35em] text-accent">Organisation</p>
@@ -99,8 +99,8 @@ export default function PhotoCategoriesManager(){
                 <p className="text-xs text-text-muted">Créez et organisez vos thèmes photographiques.</p>
             </header>
 
-            <div className="rounded-xl border border-white/10 bg-black/20 p-4">
-                <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+            <div className="border border-white/10 bg-black/20 p-5">
+                <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
                     <PremiumInput label="Nouvelle catégorie" value={name} onChange={setName} placeholder="Ex : Architecture, Portrait..." />
                     <Button type="button" compact onClick={handleCreate} disabled={creating} className="h-10 bg-accent px-5 text-xs font-medium text-black">
                         {creating ? <div className="flex items-center justify-center"><Spinner size={14} /></div> : "Ajouter"}
@@ -113,11 +113,11 @@ export default function PhotoCategoriesManager(){
             )}
 
             {sortedCategories.length === 0 ? (
-                <div className="rounded-xl border border-white/10 bg-black/20 p-6 text-center text-sm text-text-muted">Aucune catégorie.</div>
+                <div className="border border-white/10 bg-black/20 p-6 text-center text-sm text-text-muted">Aucune catégorie.</div>
             ) : (
-                <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+                <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                     {sortedCategories.map(category => (
-                        <article key={category.id} className="group flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/20 px-4 py-3 transition hover:border-accent/40 min-h-[48px]">
+                        <article key={category.id} className="group flex items-center justify-between gap-3 border border-white/10 bg-black/20 px-3 py-2 transition hover:border-accent/40 min-h-[44px] overflow-hidden">
                             <span className="flex-1 min-w-0 text-sm text-white truncate">{category.name}</span>
                             <Button type="button" compact onClick={() => handleDelete(category)} className="flex-none text-[10px] uppercase tracking-wide text-red-400 hover:text-red-300">Supprimer</Button>
                         </article>
