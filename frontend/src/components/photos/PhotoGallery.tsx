@@ -293,9 +293,8 @@ function Lightbox({ photos, index, onClose, onNavigate, isClosing }: LightboxPro
 
     // trigger mount animation after render
     useEffect(() => {
-        let id: number | undefined;
         // small delay to allow CSS transition from initial state
-        id = window.setTimeout(() => setIsMounted(true), 20);
+        const id = window.setTimeout(() => setIsMounted(true), 20);
         return () => {
             if (id) window.clearTimeout(id);
             setIsMounted(false);
