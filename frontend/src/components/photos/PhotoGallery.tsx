@@ -110,7 +110,7 @@ export default function PhotoGallery({ categoryId, categories }: PhotoGalleryPro
         <div className="grid gap-6 items-stretch grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {filteredPhotos.map((photo, idx) => {
                 const isFeatured = idx === 0;
-                const extraClass = isFeatured ? 'sm:col-span-2 md:col-span-2 lg:col-span-2' : '';
+                const extraClass = isFeatured ? 'sm:col-span-2 md:col-span-2 md:row-span-2' : '';
                 return (
                     <PhotoCard
                         key={photo.id}
@@ -322,7 +322,7 @@ function Lightbox({ photos, index, onClose, onNavigate, isClosing }: LightboxPro
                 <button
                     ref={closeBtnRef}
                     onClick={onClose}
-                    className="absolute right-0 top-0 m-2 z-[10001] bg-black/50 hover:bg-black/60 rounded-full p-2 text-white text-2xl"
+                    className="absolute right-0 top-0 m-2 z-[10001] bg-black/50 hover:bg-black/60 rounded-full p-2 text-white text-2xl cursor-pointer"
                     aria-label="Fermer"
                 >
                     ✕
@@ -366,7 +366,7 @@ function Lightbox({ photos, index, onClose, onNavigate, isClosing }: LightboxPro
                         <button
                             onClick={() => { if (index > 0) onNavigate(index - 1); }}
                             disabled={index <= 0}
-                            className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 rounded-full p-3 text-white shadow-md ${index <= 0 ? 'bg-black/20 cursor-not-allowed' : 'bg-black/40 hover:bg-black/60'}`}
+                            className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 rounded-full p-3 text-white shadow-md ${index <= 0 ? 'bg-black/20 cursor-not-allowed' : 'bg-black/40 hover:bg-black/60 cursor-pointer'}`}
                             aria-label="Précédent"
                         >
                             ←
@@ -375,7 +375,7 @@ function Lightbox({ photos, index, onClose, onNavigate, isClosing }: LightboxPro
                         <button
                             onClick={() => { if (index < photos.length - 1) onNavigate(index + 1); }}
                             disabled={index >= photos.length - 1}
-                            className={`absolute right-4 top-1/2 -translate-y-1/2 z-20 rounded-full p-3 text-white shadow-md ${index >= photos.length - 1 ? 'bg-black/20 cursor-not-allowed' : 'bg-black/40 hover:bg-black/60'}`}
+                            className={`absolute right-4 top-1/2 -translate-y-1/2 z-20 rounded-full p-3 text-white shadow-md ${index >= photos.length - 1 ? 'bg-black/20 cursor-not-allowed' : 'bg-black/40 hover:bg-black/60 cursor-pointer'}`}
                             aria-label="Suivant"
                         >
                             →
