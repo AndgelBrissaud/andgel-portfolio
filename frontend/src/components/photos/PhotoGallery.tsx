@@ -153,9 +153,11 @@ function Lightbox({ photos, index, onClose, onNavigate, isClosing }: LightboxPro
         // focus the close button after mount
         const focusTimer = setTimeout(() => closeBtnRef.current?.focus(), 10);
 
-        // prevent body scroll while lightbox is open
-        const prevOverflow = document.body.style.overflow;
+        // prevent scrolling on body and html while lightbox is open
+        const prevBodyOverflow = document.body.style.overflow;
+        const prevHtmlOverflow = document.documentElement.style.overflow;
         document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
 
         function handler(e: KeyboardEvent) {
             if (e.key === "Escape") {
@@ -199,8 +201,9 @@ function Lightbox({ photos, index, onClose, onNavigate, isClosing }: LightboxPro
             clearTimeout(focusTimer);
             clearTimeout(announceTimer);
             window.removeEventListener("keydown", handler);
-            // restore body scroll
-            document.body.style.overflow = prevOverflow;
+            // restore body/html scroll
+            document.body.style.overflow = prevBodyOverflow;
+            document.documentElement.style.overflow = prevHtmlOverflow;
             // restore focus to previous element
             prevActiveElement.current?.focus?.();
         };
@@ -298,19 +301,18 @@ function Lightbox({ photos, index, onClose, onNavigate, isClosing }: LightboxPro
 
     return (
         <div
-            className={`fixed inset-0 z-50 flex items-center justify-center p-6 transition-opacity duration-200 ${isClosing ? "opacity-0" : "opacity-100"}`}
+            className={`fixed inset-0 z-[9999] flex items-center justify-center p-6 transition-opacity duration-200 ${isClosing ? "opacity-0" : "opacity-100"}`}
             role="dialog"
             aria-modal="true"
             aria-label={photo.title || 'Image'}
             onClick={onClose}
         >
             <div className="absolute inset-0 bg-black/70" />
-
-            <div ref={containerRef} className="relative max-h-[90vh] max-w-[90vw] z-10" onClick={(e) => e.stopPropagation()} aria-labelledby="lightbox-title" aria-describedby="lightbox-desc">
+            <div ref={containerRef} className="relative max-h-[90vh] max-w-[90vw] z-[10000]" onClick={(e) => e.stopPropagation()} aria-labelledby="lightbox-title" aria-describedby="lightbox-desc">
                 <button
                     ref={closeBtnRef}
                     onClick={onClose}
-                    className="absolute right-0 top-0 m-2 z-20 bg-black/50 hover:bg-black/60 rounded-full p-2 text-white text-2xl"
+                    className="absolute right-0 top-0 m-2 z-[10001] bg-black/50 hover:bg-black/60 rounded-full p-2 text-white text-2xl"
                     aria-label="Fermer"
                 >
                     ✕
