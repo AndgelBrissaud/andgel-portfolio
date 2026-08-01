@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { getPhotos, deletePhoto } from "../../../services/photos.service";
-import { getImageUrl } from "../../../services/api";
 import type { Photo } from "../../../types/photo";
 import PhotoCard from "./PhotoCard";
 import EditPhoto from "./EditPhoto";
-import ImageModal from "../../ui/ImageModal";
+import Lightbox from "../../photos/Lightbox";
 
 export default function PhotosList() {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState<Photo | null>(null);
-  const [viewing, setViewing] = useState<Photo | null>(null);
+  const [viewingIndex, setViewingIndex] = useState<number | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -78,8 +77,8 @@ export default function PhotosList() {
         <div className="rounded-xl border border-white/10 bg-surface px-4 py-8 text-center text-sm text-text-muted">Aucune photographie disponible.</div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {photos.map((photo) => (
-            <PhotoCard key={photo.id} photo={photo} onEdit={setEditing} onDelete={handleDelete} onView={(p) => setViewing(p)} />
+          {photos.map((photo, idx) => (
+            <PhotoCard key={photo.id} photo={photo} onEdit={setEditing} onDelete={handleDelete} onView={() => setViewingIndex(idx)} />
           ))}
         </div>
       )}
@@ -92,7 +91,15 @@ export default function PhotosList() {
         </div>
       )}
 
-      {viewing && <ImageModal image={getImageUrl(viewing.image)} title={viewing.title} onClose={() => setViewing(null)} />}
+      {viewingIndex !== null && (
+        <Lightbox
+          photos={photos}
+          index={viewingIndex}
+          isClosing={false}
+          onClose={() => setViewingIndex(null)}
+          onNavigate={(i) => setViewingIndex(i)}
+        />
+      )}
     </section>
   );
 }

@@ -31,11 +31,7 @@ export default function AdminPhotos() {
   return (
     <main className="min-h-screen bg-background px-6 py-10">
       <div className="mx-auto max-w-7xl space-y-12">
-        <header>
-          <p className="text-xs uppercase tracking-[0.3em] text-accent">Administration</p>
-          <h1 className="mt-2 font-title text-5xl text-text">Photographies</h1>
-          <p className="mt-3 max-w-2xl text-text-muted">Gestion complète de la galerie, des images et des catégories.</p>
-        </header>
+        {/* Page header removed per request */}
 
         <div className="grid gap-8 lg:grid-cols-[1fr_2fr]">
           <section className="space-y-6">
@@ -56,11 +52,6 @@ export default function AdminPhotos() {
           </section>
 
           <section className="space-y-6">
-            <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-accent">Galerie</p>
-              <h2 className="mt-2 font-title text-3xl text-text">Photographies existantes</h2>
-            </div>
-
             <PhotosList />
           </section>
         </div>
