@@ -117,9 +117,11 @@ export default function PhotoCategoriesManager(){
             ) : (
                 <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                     {sortedCategories.map(category => (
-                        <article key={category.id} className="group flex items-center justify-between gap-3 border border-white/10 bg-black/20 px-3 py-2 transition hover:border-accent/40 min-h-[44px] overflow-hidden">
-                            <span className="flex-1 min-w-0 text-sm text-text truncate">{category.name}</span>
-                            <Button type="button" compact onClick={() => handleDelete(category)} className="flex-none px-4 text-[10px] tracking-wide text-red-400 hover:text-red-300">Supprimer</Button>
+                        <article key={category.id} className="group border border-white/10 bg-black/20 px-3 py-3 transition hover:border-accent/40">
+                            <span className="text-sm text-text text-center break-words w-full">{category.name}</span>
+                            <div className="w-full mt-3 flex justify-center">
+                                <Button type="button" compact onClick={() => handleDelete(category)} className="px-4 text-[10px] tracking-wide text-red-400 hover:text-red-300">Supprimer</Button>
+                            </div>
                         </article>
                     ))}
                 </div>

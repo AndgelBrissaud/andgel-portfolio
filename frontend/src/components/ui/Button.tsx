@@ -42,7 +42,7 @@ export default function Button({
 
 
     const style = compact ? `
-        group
+        relative
         relative
         inline-flex
         items-center
@@ -60,7 +60,7 @@ export default function Button({
         duration-300
         ${className}
     ` : `
-        group
+        relative
         relative
         inline-flex
         items-center
@@ -114,7 +114,7 @@ export default function Button({
 
                     duration-1000
 
-                    group-hover:translate-x-full
+                    hover:translate-x-full
 
                 "
 
@@ -140,7 +140,7 @@ export default function Button({
 
                     duration-500
 
-                    group-hover:opacity-100
+                    hover:opacity-100
 
                     border
 
@@ -166,7 +166,7 @@ export default function Button({
 
                     duration-500
 
-                    group-hover:text-[#d8b56a]
+                    hover:text-[#d8b56a]
 
                 "
 
